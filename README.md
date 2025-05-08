@@ -684,3 +684,14 @@ Abaixo segue a *Documentação Swagger da API IncluSound*!
   ```
 
 
+---
+
+
+## 👥 **Autores do Projeto**
+
+- Sara Lamari Silva
+- Thiago Lameiras de Mattos
+- Maria Júlia da Silva Araújo
+- Beatriz Vinguerti Xavier
+
+
