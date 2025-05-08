@@ -118,6 +118,18 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 ---
 
 ## 💠 **Tecnologias utilizadas**
+
+🔹 **Node.js + Express.js** → Escolhemos **Node.js** por sua eficiência em operações assíncronas e escalabilidade para múltiplas requisições simultâneas. A utilização de **Express.js** facilita a organização das rotas REST, permitindo uma estrutura modular e expansível.  
+
+🔹 **JWT (JSON Web Token)** → Implementamos **JWT** para autenticação segura, garantindo sessões protegidas sem necessidade de consultas frequentes ao banco de dados.  
+
+🔹 **node-gtts (Google Text-to-Speech)** → Utilizamos **Google Text-to-Speech (gTTS)** para conversão de texto em áudio, garantindo suporte a múltiplos idiomas e alta qualidade sonora.  
+
+🔹 **node-summary** → Integramos **node-summary** para criação de resumos automáticos, facilitando o consumo de grandes quantidades de texto de forma compacta e compreensível.  
+
+🔹 **SQLite** → Optamos por **SQLite** como banco de dados devido à sua simplicidade, eficiência e portabilidade.  
+
+
 [![My Skills](https://skillicons.dev/icons?i=vscode,nodejs,npm,sqlite,sequelize&theme=light)](https://skillicons.dev)
 
 
