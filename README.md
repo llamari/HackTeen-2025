@@ -123,14 +123,14 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 
 🔹 **JWT (JSON Web Token)** → Implementamos **JWT** para autenticação segura, garantindo sessões protegidas sem necessidade de consultas frequentes ao banco de dados.  
 
-🔹 **node-gtts (Google Text-to-Speech)** → Utilizamos **Google Text-to-Speech (gTTS)** para conversão de texto em áudio, garantindo suporte a múltiplos idiomas e alta qualidade sonora.  
+🔹 **node-gtts (Google Text-to-Speech)** → Utilizamos **Google Text-to-Speech (gTTS)** para conversão de texto em áudio, garantindo suporte a múltiplos idiomas e alta qualidade sonora com fácil implementação via NPM.  
 
-🔹 **node-summary** → Integramos **node-summary** para criação de resumos automáticos, facilitando o consumo de grandes quantidades de texto de forma compacta e compreensível.  
+🔹 **node-summary** → Integramos **node-summary** para criação de resumos automáticos, facilitando o consumo de grandes quantidades de texto de forma compacta e compreensível com fácil implementação via NPM.  
 
-🔹 **SQLite** → Optamos por **SQLite** como banco de dados devido à sua simplicidade, eficiência e portabilidade.  
+🔹 **SQLite + Sequelize** → O projeto utiliza **SQLite** para armazenar os dados localmente, garantindo rapidez e portabilidade, combinado com **Sequelize** para gerenciamento ORM, facilitando consultas e manipulação de dados.  
 
 
-[![My Skills](https://skillicons.dev/icons?i=vscode,nodejs,npm,sqlite,sequelize&theme=light)](https://skillicons.dev)
+[![My Skills](https://skillicons.dev/icons?i=nodejs,npm,sqlite,sequelize&theme=light)](https://skillicons.dev)
 
 
 
