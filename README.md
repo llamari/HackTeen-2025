@@ -89,7 +89,7 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 
 📌 A API segue o padrão REST e está documentada no Swagger.
 
-✅ Acesse a documentação Swagger: 🔗 http://localhost:5000/api-docs
+✅ Acesse a documentação Swagger: 🔗 [CLIQUE AQUI](docs/swagger.json)
 
 ---
 
