@@ -7,7 +7,7 @@ const cors = require('cors');
 const app = express();
 const port = 5000;
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(require('./swagger.json')));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(require('../docs/swagger.json')));
 
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:8081'];
 
