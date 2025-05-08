@@ -25,6 +25,14 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 ---
 
 ## 🛠 **Como Instalar e Rodar**
+
+### **Clone o repositório:**
+
+  ```bash
+  git clone https://github.com/llamari/HackTeen-2025.git
+  cd HackTeen-2025
+  ```
+
 ### **Backend**
 1️⃣ **Criar um arquivo `.env`** baseado no `exemplo.env`.  
 2️⃣ **Instalar dependências**: 
