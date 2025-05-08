@@ -138,9 +138,9 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 
 O *Swagger* é um tipo de documentação em que descreve as rotas da nossa API. Ele é como se fosse um "manual" de como utilizar cada rota da API, como os campos que devem ser inseridos no corpo da requisição, exemplos de como se deve preencher esse campos, além dos tipos de dados dos campos.
 
-Essa documentação é de extensão *.js* e sua estrutura se assemelha a um arquivo *.JSON* que tem como característica pares de chave-valor.
+Essa documentação é de extensão *.JSON* que tem como característica pares de chave-valor.
 
-Você pode acessar a documentação do projeto através da pasta *Docs* do repositório, que esta nomeada como *swagger*. Ou então lê-lo a seguir:
+Você pode acessar a documentação do projeto através da pasta *Docs* do repositório, que esta nomeada como *swagger.json*. Ou então lê-lo a seguir:
 
 Abaixo segue a *Documentação Swagger da API IncluSound*!
 
