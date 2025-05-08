@@ -1,10 +1,13 @@
 const express = require('express');
+const swaggerUi = require('swagger-ui-express');
 const { GetUsers, SignUp, SignIn, Delete, ForgotPassword, Verify, NewPassword } = require('./users');
 const verifyToken = require('./middleware');
 const { TextToSound, Summarise, YourTexts } = require('./tts');
 const cors = require('cors');
 const app = express();
 const port = 5000;
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(require('./swagger.json')));
 
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:8081'];
 
