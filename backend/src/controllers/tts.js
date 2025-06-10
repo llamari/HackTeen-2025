@@ -2,7 +2,7 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const gTTS = require('gtts');
-const db = require('./db');
+const db = require('../database/db');
 const SummarizerManager = require('node-summarizer').SummarizerManager; 
 
 const app = express();

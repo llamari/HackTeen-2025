@@ -1,8 +1,8 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
-const { GetUsers, SignUp, SignIn, Delete, ForgotPassword, Verify, NewPassword } = require('./users');
+const { GetUsers, SignUp, SignIn, Delete, ForgotPassword, Verify, NewPassword } = require('./src/controllers/users');
 const verifyToken = require('./middleware');
-const { TextToSound, Summarise, YourTexts } = require('./tts');
+const { TextToSound, Summarise, YourTexts } = require('./src/controllers/tts');
 const cors = require('cors');
 const app = express();
 const port = 5000;

@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 require("dotenv").config();
 const bcrypt = require('bcryptjs');
 const NodeMailer = require("nodemailer");
-const db = require('./db');
+const db = require('../database/db');
 
 async function sendEmailWithPassword(email, subject, text) {
     try {
