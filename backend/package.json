@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "type": "module",
+  "imports": {},
+  "experimental-json-modules": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +24,7 @@
     "nodemailer": "^6.10.1",
     "nodemon": "^3.1.10",
     "puppeteer": "^24.8.0",
+    "sequelize": "^6.37.7",
     "sqlite": "^5.1.1",
     "sqlite3": "^5.1.7",
     "swagger-ui-express": "^5.0.1",

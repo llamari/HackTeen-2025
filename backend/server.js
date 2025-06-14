@@ -1,13 +1,17 @@
-const express = require('express');
-const swaggerUi = require('swagger-ui-express');
-const { GetUsers, SignUp, SignIn, Delete, ForgotPassword, Verify, NewPassword } = require('./src/controllers/users');
-const verifyToken = require('./middleware');
-const { TextToSound, Summarise, YourTexts } = require('./src/controllers/tts');
-const cors = require('cors');
+import express from 'express';
+import swaggerUi from 'swagger-ui-express';
+import cors from 'cors';
 const app = express();
 const port = 5000;
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(require('../docs/swagger.json')));
+import usersRoutes from './src/routes/usersRoutes.js';
+import ttsRoutes from './src/routes/ttsRoutes.js';
+import SwaggerImport from '../docs/swagger.json' with {type: 'json'}
+import { sequelizeDatabase } from './src/database/database.js';
+import Usuario from './src/models/usersModels.js';
+import Text from './src/models/ttsModels.js';
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(SwaggerImport));
 
 const allowedOrigins = ['http://localhost:3000', 'http://localhost:8081'];
 
@@ -24,36 +28,15 @@ app.use(cors({
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-    GetUsers(req, res);
-})
+await sequelizeDatabase();
 
-app.post('/signup', (req, res) => {
-    SignUp(req, res);
-})
+await Usuario.sync({ alter: true }); 
+await Text.sync({ alter: true });
 
-app.put('/signin', (req, res) => SignIn(req, res));
+app.use('/users', usersRoutes);
 
-app.delete('/delete', verifyToken, (req, res) => Delete(req, res));
-
-app.put('/forgot/password', (req, res) => ForgotPassword(req, res));
-
-app.put('/verify/code', (req, res) => Verify(req, res));
-
-app.put('/new/password', (req, res) => NewPassword(req, res));
-
-app.post('/texttosound', verifyToken, (req, res) => {
-    TextToSound(req, res);
-})
-
-app.post('/summarize', verifyToken, (req, res) => {
-    Summarise(req, res)
-});
-
-app.get('/yourtexts', verifyToken, (req, res) => {
-    YourTexts(req, res);
-})
+app.use('/tts', ttsRoutes);
 
 app.listen(port, (req, res) => {
-    console.log(`Ouvindo na porta http://localhost:${port}`);
+  console.log(`Ouvindo na porta http://localhost:${port}`);
 })
