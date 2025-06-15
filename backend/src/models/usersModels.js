@@ -1,7 +1,5 @@
 import { DataTypes } from 'sequelize';
-import { sequelizeDatabase } from '../database/database.js';
-
-let sequelize = await sequelizeDatabase();
+import { sequelize } from '../database/database.js';
 
 const Usuario = sequelize.define("Usuario", {
     id: {
@@ -24,7 +22,7 @@ const Usuario = sequelize.define("Usuario", {
         allowNull: true
     }
 }, {
-    tableName: 'Usuario' // força o nome exato da tabela no banco
+    tableName: 'Usuarios' // força o nome exato da tabela no banco
 })
 
 export default Usuario;

@@ -3,7 +3,7 @@ dotenv.config();
 import { DeleteUserService, ForgotPasswordService, GetUsersService, NewPasswordService, SignInService, SignUpService, VerifyCodeService } from '../services/usersServices.js';
 
 
-export const GetUsers = async (req, res) => { 
+export const GetUsers = async (req, res) => {
     const users = await GetUsersService();
     res.json(users);
 };
@@ -18,13 +18,20 @@ export const SignIn = async (req, res) => {
 
         const { token } = await SignInService(email, senha);
 
-        return res.json({
+        return res.status(200).json({
             success: true,
             token,
             message: 'Login realizado com sucesso'
         });
     } catch (error) {
         console.error('Error at SignIn:', error);
+        if (error.type == "verification") {
+            return res.status(401).json({
+                message: 'Erro de autenticação',
+                success: false,
+                error: error.message
+            });
+        }
         return res.status(500).json({
             message: 'Erro no servidor',
             success: false,
@@ -47,11 +54,15 @@ export const SignUp = async (req, res) => {
 }
 
 export const Delete = async (req, res) => {
-    const { email } = req.body;
+    try {
+        const { email } = req.body;
 
-    await DeleteUserService(email);
+        await DeleteUserService(email);
 
-    res.send({ success: true, message: "Usuário deletado com sucesso" });
+        res.status(200).send({ success: true, message: "Usuário deletado com sucesso" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
 }
 
 export const ForgotPassword = async (req, res) => {
@@ -76,7 +87,13 @@ export const Verify = async (req, res) => {
         return res.status(202).json({ message: "Usuário verificado", success: true })
     } catch (error) {
         console.error("Erro ao verificar codigo: ", error)
-        return res.status(500).json({ message: "Erro ao processar a requisição" });
+        if (error.type == "user") {
+            return res.status(401);
+        }
+        if (error.type == "code") {
+            return res.status(403);
+        }
+        return res.status(500);
     }
 }
 

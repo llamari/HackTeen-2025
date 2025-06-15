@@ -1,8 +1,6 @@
 import { DataTypes } from 'sequelize';
-import { sequelizeDatabase } from '../database/database.js';
+import { sequelize } from '../database/database.js';
 import Usuario from './usersModels.js';
-
-const sequelize = await sequelizeDatabase();
 
 const Text = sequelize.define('Text', {
     id: {
@@ -19,7 +17,7 @@ const Text = sequelize.define('Text', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: 'Usuarios', 
+            model: Usuario, 
             key: 'id'
         }
     }

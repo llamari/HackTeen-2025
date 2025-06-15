@@ -7,7 +7,7 @@ const port = 5000;
 import usersRoutes from './src/routes/usersRoutes.js';
 import ttsRoutes from './src/routes/ttsRoutes.js';
 import SwaggerImport from '../docs/swagger.json' with {type: 'json'}
-import { sequelizeDatabase } from './src/database/database.js';
+import { sequelize } from './src/database/database.js';
 import Usuario from './src/models/usersModels.js';
 import Text from './src/models/ttsModels.js';
 
@@ -28,10 +28,14 @@ app.use(cors({
 
 app.use(express.json());
 
-await sequelizeDatabase();
-
-await Usuario.sync({ alter: true }); 
-await Text.sync({ alter: true });
+(async () => {
+  try {
+    await sequelize.sync({ alter: true });
+    console.log('Banco sincronizado com sucesso!');
+  } catch (error) {
+    console.error('Erro ao sincronizar o banco:', error);
+  }
+})();
 
 app.use('/users', usersRoutes);
 

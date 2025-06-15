@@ -44,16 +44,16 @@ export const Summarise = async (req, res) => {
     const userId = req.user.id;
     const { text } = req.body;
     if (!text || typeof text !== 'string') {
-      return res.status(400).json({ error: 'Valid text not provided.' });
+      return res.status(400).json({ error: 'Informação essencial faltando' });
     }
 
     const summary = await SummariseService(userId, text);
 
     return res.status(200).json({ summary });
   } catch (error) {
-    console.error('Summarization error:', error);
+    console.error('Erro no resumo:', error);
     return res.status(500).json({
-      error: 'Error during summarization'
+      error: 'Erro durante o resumo'
     });
   }
 };

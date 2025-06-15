@@ -26,13 +26,13 @@ export const SignInService = async (email, senha) => {
     const user = await Usuario.findOne({ where: { email } });
 
     if (!user) {
-        throw new Error('Usuário não encontrado');
+        throw { type: 'verification', message: 'Usuário não encontrado' };
     }
 
     const valid = await bcrypt.compare(senha, user.password);
 
     if (!valid) {
-        throw new Error('Senha inválida')
+        throw { type: 'verification', message: 'Login inválido' };
     }
 
     const token = jwt.sign(
@@ -82,10 +82,10 @@ export const VerifyCodeService = async (code, email) => {
     const user = await Usuario.findOne({ where: { email: email } });
 
     if (!user) {
-        throw new Error("Usuário não encontrado");
+        throw { type: 'user', message: 'Usuário não encontrado' };
     }
     if (user.code != code) {
-        throw new Error('Código inválido');
+        throw { type: 'code', message: 'Código inválido' };
     }
 
     await Usuario.update({ code: null }, { where: { email: email } });
