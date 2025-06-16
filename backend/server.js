@@ -41,6 +41,4 @@ app.use('/users', usersRoutes);
 
 app.use('/tts', ttsRoutes);
 
-app.listen(port, (req, res) => {
-  console.log(`Ouvindo na porta http://localhost:${port}`);
-})
+export default app;
