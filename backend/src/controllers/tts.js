@@ -1,6 +1,9 @@
 import fs from 'fs';
 import { SummariseService, TextToSoundService, YourTextsService } from '../services/ttsServices.js';
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 export const TextToSound = async (req, res) => {
   const userId = req.user.id;
   const { text, language } = req.body;
@@ -41,13 +44,23 @@ export const TextToSound = async (req, res) => {
 
 export const Summarise = async (req, res) => {
   try {
-    const userId = req.user.id;
     const { text } = req.body;
     if (!text || typeof text !== 'string') {
       return res.status(400).json({ error: 'Informação essencial faltando' });
     }
 
-    const summary = await SummariseService(userId, text);
+    const requestBody = {
+      contents: [
+        {
+          parts: [
+            { text: `Resuma o seguinte texto: \n${text}` }
+          ],
+        },
+      ],
+    };
+
+
+    const summary = await SummariseService(requestBody);
 
     return res.status(200).json({ summary });
   } catch (error) {

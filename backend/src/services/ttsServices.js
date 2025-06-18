@@ -2,6 +2,7 @@ import path from 'path';
 import gTTS from 'gtts';
 import Text from '../models/ttsModels.js';
 import { fileURLToPath } from 'url';
+import axios from 'axios';
 import SummarizerManager from 'node-summarizer/src/SummarizerManager.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -33,27 +34,24 @@ export const TextToSoundService = async (userId, text, language) => {
     });
 };
 
-export const SummariseService = async (userId, text) => {
-    const targetLength = Math.floor(text.length * 0.6);
-
-    const sentenceCount = Math.max(1, Math.floor(targetLength / 100));
-
-    const summarizer = new SummarizerManager(text, sentenceCount);
-    const summary = summarizer.getSummaryByFrequency().summary;
-
+export const SummariseService = async (requestBody) => {
     try {
-        await Text.create({
-            content: text,
-            user_id: userId
-        })
-    } catch (error) {
-        throw { type: 'db', message: 'Erro ao salvar texto no banco.' };
-    }
+        const API_KEY = process.env.API_KEY;
+        const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-    return summary;
+        const response = await axios.post(API_URL, requestBody);
+
+        const result = response.data.candidates[0]?.content?.parts[0]?.text || '';
+
+        console.log('Resposta:', result);
+        return result;
+    } catch (error) {
+        console.error('Erro ao chamar a API:', error.response ? error.response.data : error.message);
+        return '';
+    }
 };
 
 export const YourTextsService = async (userId) => {
-  const texts = await Text.findAll({where: {user_id: userId}})
-  return texts
+    const texts = await Text.findAll({ where: { user_id: userId } })
+    return texts
 }

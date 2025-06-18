@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/', verifyToken, TextToSound);
 
-router.post('/summarize', verifyToken, Summarise);
+router.post('/summarize', Summarise);
 
 router.get('/yourtexts', verifyToken, YourTexts);
 
