@@ -7,7 +7,7 @@
   "imports": {},
   "experimental-json-modules": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "set NODE_OPTIONS=--experimental-vm-modules && jest",
     "start": "nodemon server.js"
   },
   "keywords": [],
@@ -31,6 +31,11 @@
     "text-summarization": "^1.0.4"
   },
   "devDependencies": {
-    "jest": "^30.0.0"
+    "@babel/core": "^7.27.4",
+    "@babel/preset-env": "^7.27.2",
+    "babel-jest": "^30.0.0",
+    "jest": "^30.0.0",
+    "jest-environment-node": "^30.0.0",
+    "supertest": "^7.1.1"
   }
 }
