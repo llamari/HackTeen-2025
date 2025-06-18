@@ -17,12 +17,12 @@
             "description": "Rotas de autenticação e usuários"
         },
         {
-            "name": "Text",
+            "name": "Text to Sound",
             "description": "Rotas de processamento de texto"
         }
     ],
     "paths": {
-        "/": {
+        "/users": {
             "get": {
                 "tags": [
                     "Auth"
@@ -44,22 +44,44 @@
                                             },
                                             "email": {
                                                 "type": "string"
+                                            },
+                                            "password": {
+                                                "type": "string"
+                                            },
+                                            "code": {
+                                                "type": "string"
+                                            },
+                                            "createdAt": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "format": "date-time"
                                             }
                                         }
-                                    },
-                                    "examples": {
-                                        "success": {
-                                            "value": [
-                                                {
-                                                    "id": 1,
-                                                    "email": "usuario1@exemplo.com"
-                                                },
-                                                {
-                                                    "id": 2,
-                                                    "email": "usuario2@exemplo.com"
-                                                }
-                                            ]
-                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "email": "usuario1@exemplo.com",
+                                                "password": "senha1criptografada",
+                                                "code": null,
+                                                "createdAt": "2025-06-15T13:41:30.831Z",
+                                                "updatedAt": "2025-06-15T13:41:30.831Z"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "email": "usuario2@exemplo.com",
+                                                "password": "senha2criptografada",
+                                                "code": "1234",
+                                                "createdAt": "2025-05-10T13:41:30.831Z",
+                                                "updatedAt": "2025-05-15T13:41:30.831Z"
+                                            }
+                                        ]
                                     }
                                 }
                             }
@@ -68,7 +90,7 @@
                 }
             }
         },
-        "/signup": {
+        "/users/signup": {
             "post": {
                 "tags": [
                     "Auth"
@@ -82,27 +104,27 @@
                                 "type": "object",
                                 "required": [
                                     "email",
-                                    "password"
+                                    "senha"
                                 ],
                                 "properties": {
                                     "email": {
                                         "type": "string"
                                     },
-                                    "password": {
+                                    "senha": {
                                         "type": "string"
                                     }
                                 }
                             },
                             "example": {
                                 "email": "usuario@exemplo.com",
-                                "password": "senhaSegura123"
+                                "senha": "senhaSegura123"
                             }
                         }
                     }
                 },
                 "responses": {
                     "201": {
-                        "description": "Usuário registrado com sucesso",
+                        "description": "Usuário criado",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -111,51 +133,28 @@
                                         "message": {
                                             "type": "string"
                                         },
-                                        "user": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer"
-                                                },
-                                                "email": {
-                                                    "type": "string"
-                                                }
-                                            }
+                                        "success": {
+                                            "type": "boolean"
                                         }
                                     }
                                 },
                                 "examples": {
                                     "success": {
                                         "value": {
-                                            "message": "Usuário registrado com sucesso",
-                                            "user": {
-                                                "id": 1,
-                                                "email": "usuario@exemplo.com"
-                                            }
+                                            "message": "Usuário criado",
+                                            "success": true
                                         }
                                     }
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "description": "Erro na validação dos dados",
+                    "500": {
+                        "description": "Erro interno",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "invalidEmail": {
-                                        "value": {
-                                            "error": "O email fornecido não é válido"
-                                        }
-                                    }
+                                    "type": "object"
                                 }
                             }
                         }
@@ -163,7 +162,7 @@
                 }
             }
         },
-        "/signin": {
+        "/users/signin": {
             "put": {
                 "tags": [
                     "Auth"
@@ -177,20 +176,20 @@
                                 "type": "object",
                                 "required": [
                                     "email",
-                                    "password"
+                                    "senha"
                                 ],
                                 "properties": {
                                     "email": {
                                         "type": "string"
                                     },
-                                    "password": {
+                                    "senha": {
                                         "type": "string"
                                     }
                                 }
                             },
                             "example": {
                                 "email": "usuario@exemplo.com",
-                                "password": "senhaSegura123"
+                                "senha": "senhaSegura123"
                             }
                         }
                     }
@@ -208,14 +207,18 @@
                                         },
                                         "token": {
                                             "type": "string"
+                                        },
+                                        "success": {
+                                            "type": "boolean"
                                         }
                                     }
                                 },
                                 "examples": {
                                     "success": {
                                         "value": {
-                                            "message": "Login bem-sucedido",
-                                            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImV4cCI6MTYyODg3NzYwMX0.6kUJdxk_wfh7DdYhTqT8GVXXd04-K35UkK73D7h4ZPQ"
+                                            "success": true,
+                                            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImV4cCI6MTYyODg3NzYwMX0.6kUJdxk_wfh7DdYhTqT8GVXXd04-K35UkK73D7h4ZPQ",
+                                            "message": "Login realizado com sucesso"
                                         }
                                     }
                                 }
@@ -229,6 +232,12 @@
                                 "schema": {
                                     "type": "object",
                                     "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "success": {
+                                            "value": false
+                                        },
                                         "error": {
                                             "type": "string"
                                         }
@@ -237,7 +246,9 @@
                                 "examples": {
                                     "invalidCredentials": {
                                         "value": {
-                                            "error": "Credenciais inválidas"
+                                            "message": "Erro de autenticação",
+                                            "success": false,
+                                            "error": "Usuário não encontrado"
                                         }
                                     }
                                 }
@@ -247,12 +258,33 @@
                 }
             }
         },
-        "/delete": {
+        "/users/delete": {
             "delete": {
                 "tags": [
                     "Auth"
                 ],
                 "summary": "Remove um usuário",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": [
+                                    "email"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "example": {
+                                "email": "usuario@exemplo.com"
+                            }
+                        }
+                    }
+                },
                 "security": [
                     {
                         "bearerAuth": []
@@ -260,15 +292,101 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Usuário removido com sucesso"
+                        "description": "Usuário removido com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "value": {
+                                            "message": "Usuário deletado com sucesso",
+                                            "success": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
                     "401": {
-                        "description": "Não autorizado"
+                        "description": "Token não fornecido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "invalidCredentials": {
+                                        "value": {
+                                            "message": "Token não fornecido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "Token inválido",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "invalidCredentials": {
+                                    "value": {
+                                        "message": "Token inválido"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "500": {
+                    "description": "Usuário não encontrado",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "userNotFound": {
+                                    "value": {
+                                        "message": "Usuário não encontrado"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/forgot/password": {
+        "/users/forgot/password": {
             "put": {
                 "tags": [
                     "Auth"
@@ -311,21 +429,21 @@
                                 "examples": {
                                     "success": {
                                         "value": {
-                                            "message": "Código de redefinição enviado com sucesso"
+                                            "message": "E-mail enviado"
                                         }
                                     }
                                 }
                             }
                         }
                     },
-                    "404": {
-                        "description": "Usuário não encontrado",
+                    "500": {
+                        "description": "Erro ao processar a requisição",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "object",
                                     "properties": {
-                                        "error": {
+                                        "message": {
                                             "type": "string"
                                         }
                                     }
@@ -333,7 +451,7 @@
                                 "examples": {
                                     "userNotFound": {
                                         "value": {
-                                            "error": "Usuário não encontrado"
+                                            "message": "Erro ao processar a requisição"
                                         }
                                     }
                                 }
@@ -343,7 +461,7 @@
                 }
             }
         },
-        "/verify/code": {
+        "/users/verify/code": {
             "put": {
                 "tags": [
                     "Auth"
@@ -356,12 +474,16 @@
                             "schema": {
                                 "type": "object",
                                 "required": [
-                                    "code"
+                                    "code",
+                                    "email"
                                 ],
                                 "properties": {
                                     "code": {
                                         "type": "string",
                                         "example": "123456"
+                                    },
+                                    "email": {
+                                        "type": "string"
                                     }
                                 }
                             }
@@ -370,15 +492,44 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Código válido"
+                        "description": "Código válido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "value": {
+                                            "message": "Usuário verificado",
+                                            "success": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
-                    "400": {
+                    "401": {
+                        "description": "Usuário não encontrado"
+                    },
+                    "403": {
                         "description": "Código inválido"
+                    },
+                    "500": {
+                        "description": "Erro ao processar a requisição"
                     }
                 }
             }
         },
-        "/new/password": {
+        "/users/new/password": {
             "put": {
                 "tags": [
                     "Auth"
@@ -391,12 +542,15 @@
                             "schema": {
                                 "type": "object",
                                 "required": [
-                                    "password"
+                                    "senha",
+                                    "email"
                                 ],
                                 "properties": {
-                                    "password": {
-                                        "type": "string",
-                                        "example": "novaSenha123"
+                                    "senha": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
                                     }
                                 }
                             }
@@ -404,19 +558,64 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Senha redefinida com sucesso"
+                    "202": {
+                        "description": "Senha redefinida com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "success": {
+                                            "type": "boolean"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "value": {
+                                            "message": "Senha mudada",
+                                            "success": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Erro na redefinição da senha"
+                        "description": "Informação essencial faltando"
+                    },
+                    "500": {
+                        "description": "Erro ao processar a requisição",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "value": {
+                                            "message": "Erro ao processar a requisição"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/texttosound": {
+        "/tts": {
             "post": {
                 "tags": [
-                    "Text"
+                    "Text to Sound"
                 ],
                 "summary": "Converte texto em áudio",
                 "security": [
@@ -431,11 +630,17 @@
                             "schema": {
                                 "type": "object",
                                 "required": [
-                                    "text"
+                                    "text",
+                                    "language"
                                 ],
                                 "properties": {
                                     "text": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "Olá, mundo!"
+                                    },
+                                    "language": {
+                                        "type": "string",
+                                        "example": "pt-br"
                                     }
                                 }
                             }
@@ -444,18 +649,99 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Áudio gerado com sucesso"
+                        "description": "Arquivo de áudio gerado com sucesso",
+                        "content": {
+                            "application/octet-stream": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Erro na conversão"
+                        "description": "Texto ou idioma não fornecido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Texto não fornecido."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token não fornecido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "invalidCredentials": {
+                                        "value": {
+                                            "message": "Token não fornecido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "Token inválido",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "invalidCredentials": {
+                                    "value": {
+                                        "message": "Token inválido"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no processamento do áudio",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro inesperado."
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/summarize": {
+        "/tts/summarize": {
             "post": {
                 "tags": [
-                    "Text"
+                    "Text to Sound"
                 ],
                 "summary": "Resume um texto",
                 "security": [
@@ -483,18 +769,104 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Resumo gerado com sucesso"
+                        "description": "Resumo gerado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "properties": {
+                                        "summary": {
+                                            "type": "string",
+                                            "example": "Texto resumido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     },
                     "400": {
-                        "description": "Erro ao gerar o resumo"
+                        "description": "Informação essencial faltando",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Informação essencial faltando"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token não fornecido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "invalidCredentials": {
+                                        "value": {
+                                            "message": "Token não fornecido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "Token inválido",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "invalidCredentials": {
+                                    "value": {
+                                        "message": "Token inválido"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro inesperado durante o resumo",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro durante o resumo"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
         },
-        "/yourtexts": {
+        "/tts/yourtexts": {
             "get": {
                 "tags": [
-                    "Text"
+                    "Text to Sound"
                 ],
                 "summary": "Lista textos do usuário",
                 "security": [
@@ -504,20 +876,100 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Lista retornada com sucesso",
+                        "description": "Lista de textos retornada com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "string"
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "content": {
+                                                "type": "string"
+                                            },
+                                            "user_id": {
+                                                "type": "integer"
+                                            },
+                                            "createdAt": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updatedAt": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "success": {
+                                        "value": [
+                                            {
+                                                "id": 1,
+                                                "content": "Olá, mundo!",
+                                                "user_id": 1,
+                                                "createdAt": "2025-06-15T15:45:11.233Z",
+                                                "updatedAt": "2025-06-15T15:45:11.233Z"
+                                            },
+                                            {
+                                                "id": 2,
+                                                "content": "Tchau, mundo!",
+                                                "user_id": 1,
+                                                "createdAt": "2025-06-16T15:45:11.233Z",
+                                                "updatedAt": "2025-06-16T15:45:11.233Z"
+                                            }
+                                        ]
                                     }
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Não autorizado"
+                        "description": "Token não fornecido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "invalidCredentials": {
+                                        "value": {
+                                            "message": "Token não fornecido"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "Token inválido",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "examples": {
+                                "invalidCredentials": {
+                                    "value": {
+                                        "message": "Token inválido"
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
