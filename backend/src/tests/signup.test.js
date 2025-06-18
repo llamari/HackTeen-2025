@@ -1,38 +1,27 @@
 import request from 'supertest';
 import app from '../../server.js';
+import Usuario from '../models/usersModels.js';
 
-describe('Testando rota PUT /users/signin', () => {
+afterAll(async() => {
+    await Usuario.destroy({where: {email: 'sara.silva591@etec.sp.gov.br'}})
+});
 
-  it('Deve fazer login de um usuário válido', async () => {
+describe('Testando rota POST /users/signup', () => {
+  it('Deve cadastrar um novo usuário', async () => {
     const res = await request(app)
-      .put('/users/signin')
-      .send({ email: "saralamarisilva@gmail.com", senha: "123" });
+      .post('/users/signup')
+      .send({ email: "sara.silva591@etec.sp.gov.br", senha: "123" });
 
-    expect(res.status).toBe(200);
+    expect(res.status).toBe(201);
     expect(res.body.success).toBe(true);
-    expect(res.body).toHaveProperty('token');
-    expect(res.body.message).toBe('Login realizado com sucesso');
+    expect(res.body.message).toBe("Usuário criado");
   });
 
-  it('Deve retornar erro se a senha estiver incorreta', async () => {
+  it('Deve retornar erro já que o usuário já está cadastrado', async () => {
     const res = await request(app)
-      .put('/users/signin')
-      .send({ email: "saralamarisilva@gmail.com", senha: "senhaerrada" });
+      .post('/users/signup')
+      .send({ email: "sara.silva591@etec.sp.gov.br", senha: "123" });
 
-    expect(res.status).toBe(401);
-    expect(res.body.success).toBe(false);
-    expect(res.body.message).toBe('Erro de autenticação');
-    expect(res.body).toHaveProperty('error');
+    expect(res.status).toBe(500);
   });
-
-  it('Deve retornar erro se faltar parâmetros', async () => {
-    const res = await request(app)
-      .put('/users/signin')
-      .send({ email: "saralamarisilva@gmail.com" }); // Sem senha
-
-    expect(res.status).toBe(400);
-    expect(res.body.success).toBe(false);
-    expect(res.body.message).toBe('Email e senha são obrigatórios');
-  });
-
 });
