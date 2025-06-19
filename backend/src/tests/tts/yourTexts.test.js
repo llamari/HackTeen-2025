@@ -1,20 +1,20 @@
 import request from 'supertest';
 import app from '../../../server.js';
 import bcrypt from 'bcryptjs';
-import Usuario from '../../models/usersModels.js';
+import User from '../../models/usersModels.js';
 import Text from '../../models/ttsModels.js';
 
 let token;
 
 beforeAll(async () => {
     const hashedPassword = await bcrypt.hash("123", 10);
-    await Usuario.destroy({ where: { email: "saralamari6@teste.com" } });
-    await Usuario.create({
+    await User.destroy({ where: { email: "saralamari6@teste.com" } });
+    await User.create({
         email: "saralamari6@teste.com",
         password: hashedPassword
     });
 
-    const user = await Usuario.findOne({where: {email: 'saralamari6@teste.com'}})
+    const user = await User.findOne({where: {email: 'saralamari6@teste.com'}})
 
     const res = await request(app)
         .put('/users/signin')
@@ -29,7 +29,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-    await Usuario.destroy({ where: { email: 'saralamari6@teste.com' } });
+    await User.destroy({ where: { email: 'saralamari6@teste.com' } });
 });
 
 describe('Teste do endpoint /tts/yourtexts', () => {

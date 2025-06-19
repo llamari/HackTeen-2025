@@ -48,7 +48,7 @@ function Home() {
             setAudioUrl(url);
 
         } catch (err) {
-            console.error("Error:", err);
+            console.error("Erro:", err); 
             setError(err.response?.data?.error || 'Erro ao gerar áudio');
         } finally {
             setIsLoading(false);
@@ -75,7 +75,7 @@ function Home() {
             const summary = response.data.summary;
             TextToSpeach(e, summary)
         } catch (err) {
-            console.error("Error:", err);
+            console.error("Erro:", err); 
             setError(err.response?.data?.error || 'Erro ao gerar áudio');
         } finally {
             setIsLoading(false);

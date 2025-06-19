@@ -3,16 +3,16 @@ import axios from 'axios';
 import './index.css';
 import { Link } from "react-router-dom";
 
-function Cadastro() {
-
+function UserRegistration() { 
+ 
     async function SignUp(event) {
         event.preventDefault();
         if ((document.getElementById("password").value) == (document.getElementById("password2").value)) {
             const mail = document.getElementById("e-mail").value;
-            const senha = document.getElementById("password").value;
+            const password = document.getElementById("password").value;
 
             const response = await axios.post('http://localhost:5000/signup', {
-                email: mail, senha: senha
+                email: mail, password: password 
             })
 
             console.log(response.data);
@@ -30,9 +30,9 @@ function Cadastro() {
 
     return (
         <div>
-            <section className="secao">
+            <section className="section">
                 <h2 id="title">CADASTRO</h2>
-                <form id="cadastro" onSubmit={SignUp}>
+                <form id="singUp" onSubmit={SignUp}>
                     <label htmlFor="e-mail"><b>E-mail:</b></label>
                     <input type="email" id="e-mail" className="input-login" />
                     <label htmlFor="password"><b>Senha:</b></label>
@@ -52,4 +52,4 @@ function Cadastro() {
 }
 
 
-export default Cadastro;
+export default UserRegistration;

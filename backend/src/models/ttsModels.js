@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/database.js';
-import Usuario from './usersModels.js';
+import User from './usersModels.js'; 
 
 const Text = sequelize.define('Text', {
     id: {
@@ -17,7 +17,7 @@ const Text = sequelize.define('Text', {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: Usuario, 
+            model: User, 
             key: 'id'
         }
     }
@@ -26,7 +26,7 @@ const Text = sequelize.define('Text', {
 });
 
 // 🔗 Associação
-Usuario.hasMany(Text, { foreignKey: 'user_id' });
-Text.belongsTo(Usuario, { foreignKey: 'user_id' });
+User.hasMany(Text, { foreignKey: 'user_id' }); 
+Text.belongsTo(User, { foreignKey: 'user_id' });
 
 export default Text;

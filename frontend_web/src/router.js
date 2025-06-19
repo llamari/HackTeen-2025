@@ -1,22 +1,21 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes} from 'react-router-dom'
 import Login from './Pages/Login';
-import Cadastro from './Pages/Cadastro';
-import Senha from './Pages/EsqueciASenha';
+import Password from './Pages/ForgotPassword'; // corrigir
 import Home from './Pages/Home';
+import UserRegistration from './Pages/SingUp';
 
-function Rotas() {
+function Route1() { 
     return(
         <BrowserRouter>
             <Routes>
                 <Route path='/' element={<Login/>}/>
-                <Route path='/signup' element={<Cadastro/>}/>
-                <Route path='/forgot/password' element={<Senha/>}/>
-
+                <Route path='/signup' element={<UserRegistration/>}/>
+                <Route path='/forgot/password' element={<Password/>}/>
                 <Route path='/home' element={<Home/>}/>
             </Routes>
         </BrowserRouter>
     )
 }
 
-export default Rotas;
+export default Route1; // corrigir

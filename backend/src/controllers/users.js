@@ -10,13 +10,13 @@ export const GetUsers = async (req, res) => {
 
 export const SignIn = async (req, res) => {
     try {
-        const { email, senha } = req.body;
+        const { email, password } = req.body; 
 
-        if (!email || !senha) {
+        if (!email || !password) { 
             return res.status(400).json({ message: 'Email e senha são obrigatórios', success: false });
         }
 
-        const { token } = await SignInService(email, senha);
+        const { token } = await SignInService(email, password);
 
         return res.status(200).json({
             success: true,
@@ -24,7 +24,7 @@ export const SignIn = async (req, res) => {
             message: 'Login realizado com sucesso'
         });
     } catch (error) {
-        console.error('Error at SignIn:', error);
+        console.error('Erro em Logar (SignIn):', error); 
         if (error.type == "verification") {
             return res.status(401).json({
                 message: 'Erro de autenticação',
@@ -42,16 +42,15 @@ export const SignIn = async (req, res) => {
 
 export const SignUp = async (req, res) => {
     try {
-        const { email, senha } = req.body;
+        const { email, password } = req.body;  
+        const user = await SignUpService(email, password)  
 
-        const usuario = await SignUpService(email, senha)
-
-        res.status(201).json({ message: 'Usuário criado', id: usuario.id, success: true });
+        res.status(201).json({ message: 'Usuário criado', id: user.id, success: true }); 
     } catch (error) {
         if (error.type === "userExists") {
             res.status(409).json({message: 'Usuário já existe'})
         }
-        console.error("Error at SignUp: ", error);
+        console.error("Erro em Cadastrar (SignUp): ", error);  
         res.status(500).json({ message: 'Erro interno no servidor' });
     }
 }
@@ -89,7 +88,7 @@ export const Verify = async (req, res) => {
 
         return res.status(202).json({ message: "Usuário verificado", success: true })
     } catch (error) {
-        console.error("Erro ao verificar codigo: ", error)
+        console.error("Erro ao verificar código: ", error) 
         if (error.type == "user") {
             return res.status(401);
         }
@@ -102,10 +101,10 @@ export const Verify = async (req, res) => {
 
 export const NewPassword = async (req, res) => {
     try {
-        const { senha, email } = req.body;
-        if (!senha || !email) return res.status(400).send("Informações essenciais faltando");
+        const { password, email } = req.body;    // corrigir
+        if (!password || !email) return res.status(400).send("Informações essenciais faltando");  // corrigir
 
-        await NewPasswordService(email, senha);
+        await NewPasswordService(email, password);  // corrigir
 
         return res.status(202).json({ message: "Senha mudada", success: true })
     } catch (error) {

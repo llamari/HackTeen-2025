@@ -1,24 +1,24 @@
 import request from 'supertest';
 import app from '../../../server.js';
-import Usuario from '../../models/usersModels.js';
+import User from '../../models/usersModels.js';
 import bcrypt from 'bcryptjs';
 
 let token;
 
 beforeAll(async () => {
-    await Usuario.destroy({ where: { email: "saralamari@teste.com" } })
+    await User.destroy({ where: { email: "saralamari@teste.com" } })
 
     const hashedPassword = await bcrypt.hash("123", 10);
 
-    await Usuario.create({
+    await User.create({
         email: "saralamari@teste.com",
         password: hashedPassword
     });
 
-    await Usuario.destroy({ where: { email: "saralamari2@teste.com" } })
+    await User.destroy({ where: { email: "saralamari2@teste.com" } })
 
 
-    await Usuario.create({
+    await User.create({
         email: "saralamari2@teste.com",
         password: hashedPassword
     });
@@ -31,7 +31,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-    await Usuario.destroy({ where: { email: "saralamari2@teste.com" } })
+    await User.destroy({ where: { email: "saralamari2@teste.com" } })
 })
 
 describe('Deleta um usuário', () => {

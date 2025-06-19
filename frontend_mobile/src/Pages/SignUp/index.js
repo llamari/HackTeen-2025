@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, useWindowDimension
 import axios from 'axios';
 import { useNavigation } from "@react-navigation/native";
 
-function Cadastro() {
+function UserRegistration() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -18,7 +18,7 @@ function Cadastro() {
                 console.log("As senhas são iguais")
                 const response = await axios.post('http://localhost:5000/signup', {
                     email: email,
-                    senha: password
+                    password: password 
                 });
 
                 console.log(response.data);
@@ -42,9 +42,9 @@ function Cadastro() {
     const formWidth = width < 480 ? '80%' : '30%';
 
     return (
-        <View style={styles.secao}>
+        <View style={styles.section}> 
             <Text style={styles.title}>CADASTRO</Text>
-            <View style={[styles.cadastro, { width: formWidth }]}>
+            <View style={[styles.registrationForm, { width: formWidth }]}>
                 <Text style={styles.label}>E-mail:</Text>
                 <TextInput
                     style={styles.inputLogin}
@@ -90,7 +90,7 @@ function Cadastro() {
 }
 
 const styles = StyleSheet.create({
-    secao: {
+    section: { // corrigir
         width: '100%',
         height: '100%',
         backgroundColor: '#FFF',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         padding: 20,
     },
-    cadastro: {
+    registrationForm: { // corrigir
         backgroundColor: '#A2D4DD',
         padding: '5%',
         borderRadius: 8,
@@ -155,4 +155,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Cadastro;
+export default UserRegistration; // corrigir

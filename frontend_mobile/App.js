@@ -1,11 +1,11 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import Cadastro from './src/Pages/Cadastro';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './src/Pages/Login';
-import Senha from './src/Pages/EsqueciASenha';
 import Home from './src/Pages/Home';
+import Password from './src/Pages/ForgotPassword';
+import UserRegistration from './src/Pages/SignUp';
 
 const Stack = createNativeStackNavigator();
 
@@ -35,15 +35,15 @@ export default function App() {
           },
         }}
       >
-        <Stack.Screen name='Login' component={Login} />
-        <Stack.Screen name="Cadastro" component={Cadastro} />
-        <Stack.Screen name='EsqueciASenha' component={Senha} />
-        <Stack.Screen name='Home' component={Home} />
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="SingUp" component={UserRegistration} /> 
+        <Stack.Screen name="ForgotPassword" component={Password} />
+        <Stack.Screen name="Home" component={Home} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
+// corrigir, pq está com aspas simples e duplas?
 const styles = StyleSheet.create({
   container: {
     flex: 1,

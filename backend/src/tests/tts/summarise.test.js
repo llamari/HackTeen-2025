@@ -1,21 +1,21 @@
 import request from 'supertest';
 import app from '../../../server.js';
 import bcrypt from 'bcryptjs';
-import Usuario from '../../models/usersModels.js';
+import User from '../../models/usersModels.js';
 
 let token;
 
 beforeAll(async () => {
     const hashedPassword = await bcrypt.hash("123", 10);
-    await Usuario.destroy({ where: { email: "saralamari5@teste.com" } });
-    await Usuario.create({
+    await User.destroy({ where: { email: "saralamari5@teste.com" } });
+    await User.create({
         email: "saralamari5@teste.com",
         password: hashedPassword
     });
 
     const res = await request(app)
         .put('/users/signin')
-        .send({ email: 'saralamari5@teste.com', senha: '123' });
+        .send({ email: 'saralamari5@teste.com', password: '123' });
     token = res.body.token;
 });
 

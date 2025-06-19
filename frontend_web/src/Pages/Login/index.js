@@ -7,12 +7,12 @@ function Login() {
 
     async function SignIn (event){
         event.preventDefault(); // Impede o recarregamento da página
-        console.log("está logando")
+        console.log("Está logando") 
         const mail = document.getElementById("e-mail").value;
-        const senha = document.getElementById("password").value;
+        const password = document.getElementById("password").value;
 
         const response = await axios.put('http://localhost:5000/signin', {
-            email: mail, senha: senha
+            email: mail, password: password 
         })
 
         console.log(response.data);
@@ -27,7 +27,7 @@ function Login() {
 
     return(
         <div>
-            <section className="secao">
+            <section className="section">
                 <h2 id="title">LOGIN</h2>
                 <form id="login">
                     <label htmlFor="e-mail"><b>E-mail:</b></label>

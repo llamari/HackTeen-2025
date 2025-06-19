@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/database.js';
 
-const Usuario = sequelize.define("Usuario", {
+const User = sequelize.define("Usuario", { 
     id: {
         type: DataTypes.INTEGER,
         autoIncrement: true,
@@ -25,4 +25,4 @@ const Usuario = sequelize.define("Usuario", {
     tableName: 'Usuarios' // força o nome exato da tabela no banco
 })
 
-export default Usuario;
+export default User; 

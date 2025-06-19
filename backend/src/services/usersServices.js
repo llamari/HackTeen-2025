@@ -2,40 +2,40 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 import bcrypt from 'bcryptjs';
-import Usuario from '../models/usersModels.js';
+import User from '../models/usersModels.js'; 
 import { sendEmailWithPassword } from '../utils/sendEmail.js';
 
 export const GetUsersService = async () => {
-    const users = await Usuario.findAll();
+    const users = await User.findAll(); 
     return users
 }
 
-export const SignUpService = async (email, senha) => {
-    const password = await bcrypt.hash(senha, 10);
+export const SignUpService = async (email, password) => { 
+    const password = await bcrypt.hash(password, 10);
 
-    const userExists = await Usuario.findOne({where: {email: email}})
+    const userExists = await User.findOne({where: {email: email}})
 
     if (userExists) {
         throw { type: 'userExists'};        
     } 
     
-    const usuario = await Usuario.create({
+    const user = await User.create({ 
         email: email,
         password: password,
         code: null
     })
 
-    return usuario
+    return user 
 }
 
-export const SignInService = async (email, senha) => {
-    const user = await Usuario.findOne({ where: { email } });
+export const SignInService = async (email, password) => {
+    const user = await User.findOne({ where: { email } }); 
 
     if (!user) {
         throw { type: 'verification', message: 'Usuário não encontrado' };
     }
 
-    const valid = await bcrypt.compare(senha, user.password);
+    const valid = await bcrypt.compare(password, user.password); 
 
     if (!valid) {
         throw { type: 'verification', message: 'Login inválido' };
@@ -54,24 +54,24 @@ export const SignInService = async (email, senha) => {
 };
 
 export const DeleteUserService = async (email) => {
-    const user = await Usuario.findOne({ where: { email: email } })
+    const user = await User.findOne({ where: { email: email } }) 
     if (!user) {
         throw new Error('Usuário não encontrado')
     }
 
-    await Usuario.destroy({ where: { email: email } })
+    await User.destroy({ where: { email: email } })
 }
 
 export const ForgotPasswordService = async (email) => {
-    const user = await Usuario.findOne({ where: { email: email } })
+    const user = await User.findOne({ where: { email: email } }) 
 
     if (!user) {
-        throw new Error("Usuário não encntrado");
+        throw new Error("Usuário não encontrado"); 
     }
 
     const code = Math.floor(1000 + Math.random() * 9000);
 
-    await Usuario.update({ code: code }, { where: { email: email } })
+    await User.update({ code: code }, { where: { email: email } }) 
 
     console.log("Código gerado:", code);
 
@@ -85,7 +85,7 @@ export const ForgotPasswordService = async (email) => {
 }
 
 export const VerifyCodeService = async (code, email) => {
-    const user = await Usuario.findOne({ where: { email: email } });
+    const user = await User.findOne({ where: { email: email } }); 
 
     if (!user) {
         throw { type: 'user', message: 'Usuário não encontrado' };
@@ -94,17 +94,17 @@ export const VerifyCodeService = async (code, email) => {
         throw { type: 'code', message: 'Código inválido' };
     }
 
-    await Usuario.update({ code: null }, { where: { email: email } });
+    await User.update({ code: null }, { where: { email: email } }); 
 }
 
-export const NewPasswordService = async (email, senha) => {
-    const hashed = await bcrypt.hash(senha, 10);
+export const NewPasswordService = async (email, password) => { 
+    const hashed = await bcrypt.hash(password, 10);            
 
-    const user = await Usuario.findOne({ where: { email: email } });
+    const user = await User.findOne({ where: { email: email } }); 
 
     if (!user) {
         throw new Error("Usuário não encontrado");
     }
 
-    await Usuario.update({ password: hashed }, { where: { email: email } });
+    await User.update({ password: hashed }, { where: { email: email } });
 }

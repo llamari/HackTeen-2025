@@ -63,7 +63,7 @@ function Home() {
             playSound();
 
         } catch (err) {
-            console.error("Error:", err);
+            console.error("Erro:", err); 
             setError(err.response?.data?.error || 'Erro ao gerar áudio');
         } finally {
             setIsLoading(false);
@@ -89,7 +89,7 @@ function Home() {
             const summary = response.data.summary;
             TextToSpeach(summary);
         } catch (err) {
-            console.error("Error:", err);
+            console.error("Erro:", err); r
             setError(err.response?.data?.error || 'Erro ao gerar resumo');
         } finally {
             setIsLoading(false);

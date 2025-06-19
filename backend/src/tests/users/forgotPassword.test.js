@@ -2,7 +2,7 @@
 import request from 'supertest';
 import app from '../../../server.js';
 import { expect, jest } from '@jest/globals';
-import Usuario from '../../models/usersModels.js';
+import User from '../../models/usersModels.js';
 import bcrypt from 'bcryptjs';
 
 let code;
@@ -15,18 +15,18 @@ jest.unstable_mockModule('../../utils/sendEmail.js', () => ({
 let token;
 
 beforeAll(async () => {
-    await Usuario.destroy({ where: { email: "saralamarisilva@gmail.com" } })
+    await User.destroy({ where: { email: "saralamarisilva@gmail.com" } })
 
     const hashedPassword = await bcrypt.hash("123", 10);
 
-    await Usuario.create({
+    await User.create({
         email: "saralamarisilva@gmail.com",
         password: hashedPassword
     });
 });
 
 afterAll(async () => {
-    await Usuario.destroy({ where: { email: "saralamarisilva@gmail.com" } })
+    await User.destroy({ where: { email: "saralamarisilva@gmail.com" } })
 })
 
 describe('Teste do forgot password', () => {
@@ -57,7 +57,7 @@ describe('Teste do forgot password', () => {
     it('Deve mudar a senha do usuário', async () => {
         const res = await request(app)
             .put('/users/new/password')
-            .send({ email: 'saralamarisilva@gmail.com', senha: '1234' });
+            .send({ email: 'saralamarisilva@gmail.com', password: '1234' });
 
         expect(res.status).toBe(202);
         expect(res.body).toHaveProperty('message');

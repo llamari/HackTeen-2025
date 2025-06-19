@@ -8,7 +8,7 @@ import usersRoutes from './src/routes/usersRoutes.js';
 import ttsRoutes from './src/routes/ttsRoutes.js';
 import SwaggerImport from '../docs/swagger.json' with {type: 'json'}
 import { sequelize } from './src/database/database.js';
-import Usuario from './src/models/usersModels.js';
+import User from './src/models/usersModels.js'; 
 import Text from './src/models/ttsModels.js';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(SwaggerImport));

@@ -12,11 +12,11 @@ function Login() {
     const { width } = useWindowDimensions();
 
     async function SignIn() {
-        console.log("está logando");
+        console.log("Está logando"); 
         try {
             const response = await axios.put('http://localhost:5000/signin', {
                 email: email,
-                senha: password
+                password: password 
             });
 
             console.log(response.data);
@@ -37,7 +37,7 @@ function Login() {
     const formWidth = width < 480 ? '80%' : '30%';
 
     return (
-        <View style={styles.secao}>
+        <View style={styles.section}>
             <Text style={styles.title}>LOGIN</Text>
             <View style={[styles.login, { width: formWidth }]}>
                 <Text style={styles.label}><Text style={styles.bold}>E-mail:</Text></Text>
@@ -58,10 +58,10 @@ function Login() {
                 />
 
                 <View style={styles.linksContainer}>
-                    <TouchableOpacity onPress={() => navigation.navigate('EsqueciASenha')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
                         <Text style={styles.link}>Esqueci a senha</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('SingUp')}>
                         <Text style={styles.link}>Não tenho conta</Text>
                     </TouchableOpacity>
                 </View>
@@ -79,7 +79,7 @@ function Login() {
 }
 
 const styles = StyleSheet.create({
-    secao: {
+    section: { 
         width: '100%',
         height: '100%',
         backgroundColor: '#FFF',

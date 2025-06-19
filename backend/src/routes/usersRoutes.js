@@ -1,7 +1,8 @@
 import express from 'express';
 import { Verify, ForgotPassword, Delete, SignIn, SignUp, GetUsers, NewPassword } from '../controllers/users.js';
-const router = express.Router()
-import verifyToken from '../middlewares/jwt_middleware.js'
+import verifyToken from '../middlewares/jwt_middleware.js';
+
+const router = express.Router();
 
 router.get('/', GetUsers);
 router.post('/signup', SignUp);

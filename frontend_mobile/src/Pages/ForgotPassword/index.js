@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, useWindowDimension
 import axios from 'axios';
 import { useNavigation } from "@react-navigation/native";
 
-function Senha() {
+function Password() {
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
     const [password, setPassword] = useState("");
@@ -55,7 +55,7 @@ function Senha() {
 
         try {
             await axios.put("http://localhost:5000/new/password", {
-                senha: password, 
+                password: password, 
                 email: email
             });
             
@@ -224,4 +224,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Senha;
+export default Password;
