@@ -41,7 +41,6 @@ export const TextToSound = async (req, res) => {
   }
 };
 
-
 export const Summarise = async (req, res) => {
   try {
     const { text } = req.body;
@@ -49,18 +48,7 @@ export const Summarise = async (req, res) => {
       return res.status(400).json({ error: 'Informação essencial faltando' });
     }
 
-    const requestBody = {
-      contents: [
-        {
-          parts: [
-            { text: `Resuma o seguinte texto: \n${text}` }
-          ],
-        },
-      ],
-    };
-
-
-    const summary = await SummariseService(requestBody);
+    const summary = await SummariseService(text);
 
     return res.status(200).json({ summary });
   } catch (error) {
@@ -75,5 +63,5 @@ export const YourTexts = async (req, res) => {
   const userId = req.user.id;
   const texts = await YourTextsService(userId);
 
-  res.json(texts);
+  res.json({texts: texts});
 }

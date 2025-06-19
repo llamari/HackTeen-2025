@@ -13,6 +13,12 @@ export const GetUsersService = async () => {
 export const SignUpService = async (email, senha) => {
     const password = await bcrypt.hash(senha, 10);
 
+    const userExists = await Usuario.findOne({where: {email: email}})
+
+    if (userExists) {
+        throw { type: 'userExists'};        
+    } 
+    
     const usuario = await Usuario.create({
         email: email,
         password: password,

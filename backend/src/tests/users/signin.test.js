@@ -1,12 +1,28 @@
 import request from 'supertest';
-import app from '../../server.js';
+import app from '../../../server.js';
+import Usuario from '../../models/usersModels.js';
+import bcrypt from 'bcryptjs';
+
+beforeAll(async () => {
+  await Usuario.destroy({ where: { email: "saralamari3@gmail.com" } })
+
+  const hashedPassword = await bcrypt.hash("123", 10);
+
+  await Usuario.create({
+    email: "saralamari3@gmail.com",
+    password: hashedPassword
+  });
+})
+
+afterAll(async () => {
+  await Usuario.destroy({ where: { email: "saralamari3@gmail.com" } })
+})
 
 describe('Testando rota PUT /users/signin', () => {
-
   it('Deve fazer login de um usuário válido', async () => {
     const res = await request(app)
       .put('/users/signin')
-      .send({ email: "saralamarisilva@gmail.com", senha: "123" });
+      .send({ email: "saralamari3@gmail.com", senha: "123" });
 
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
@@ -17,7 +33,7 @@ describe('Testando rota PUT /users/signin', () => {
   it('Deve retornar erro se a senha estiver incorreta', async () => {
     const res = await request(app)
       .put('/users/signin')
-      .send({ email: "saralamarisilva@gmail.com", senha: "senhaerrada" });
+      .send({ email: "saralamari3@gmail.com", senha: "senhaerrada" });
 
     expect(res.status).toBe(401);
     expect(res.body.success).toBe(false);
@@ -28,7 +44,7 @@ describe('Testando rota PUT /users/signin', () => {
   it('Deve retornar erro se faltar parâmetros', async () => {
     const res = await request(app)
       .put('/users/signin')
-      .send({ email: "saralamarisilva@gmail.com" }); // Sem senha
+      .send({ email: "saralamari3@gmail.com" }); // Sem senha
 
     expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);

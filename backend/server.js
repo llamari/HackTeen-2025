@@ -30,7 +30,7 @@ app.use(express.json());
 
 (async () => {
   try {
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     console.log('Banco sincronizado com sucesso!');
   } catch (error) {
     console.error('Erro ao sincronizar o banco:', error);
@@ -40,42 +40,5 @@ app.use(express.json());
 app.use('/users', usersRoutes);
 
 app.use('/tts', ttsRoutes);
-
-//----------------------------------------------------------------------------
-
-import axios from 'axios';
-import fs from 'fs';
-import dotenv from 'dotenv';
-dotenv.config();
-
-// 🔑 Sua API Key
-const API_KEY = process.env.API_KEY
-
-// 📤 URL da API do Gemini
-const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-
-// 🧠 Defina o prompt e a imagem
-const requestBody = {
-  contents: [
-    {
-      parts: [
-        { text: "O que é um beija-flor?" }
-      ],
-    },
-  ],
-};
-
-app.get('/', async (req, res) => {
-  try {
-    const response = await axios.post(API_URL, requestBody);
-
-    console.log('Resposta do modelo:\n');
-    response.data.candidates.forEach((candidate, index) => {
-      console.log(`${candidate.content.parts[0].text}\n`);
-    });
-  } catch (error) {
-    console.error('Erro ao chamar a API:', error.response ? error.response.data : error.message);
-  }
-})
 
 export default app;

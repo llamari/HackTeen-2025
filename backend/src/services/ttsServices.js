@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 
 export const TextToSoundService = async (userId, text, language) => {
     const filename = `audio-${Date.now()}.mp3`;
-    const filepath = path.join(__dirname, '../audios', filename);
+    const filepath = path.join(__dirname, filename);
 
     try {
         await Text.create({
@@ -34,8 +34,18 @@ export const TextToSoundService = async (userId, text, language) => {
     });
 };
 
-export const SummariseService = async (requestBody) => {
+export const SummariseService = async (text) => {
     try {
+        const requestBody = {
+            contents: [
+                {
+                    parts: [
+                        { text: `Resuma o seguinte texto: \n${text}` }
+                    ],
+                },
+            ],
+        };
+
         const API_KEY = process.env.API_KEY;
         const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
@@ -43,7 +53,6 @@ export const SummariseService = async (requestBody) => {
 
         const result = response.data.candidates[0]?.content?.parts[0]?.text || '';
 
-        console.log('Resposta:', result);
         return result;
     } catch (error) {
         console.error('Erro ao chamar a API:', error.response ? error.response.data : error.message);

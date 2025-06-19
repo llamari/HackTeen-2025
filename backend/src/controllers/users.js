@@ -44,12 +44,15 @@ export const SignUp = async (req, res) => {
     try {
         const { email, senha } = req.body;
 
-        const usuario = SignUpService(email, senha)
+        const usuario = await SignUpService(email, senha)
 
         res.status(201).json({ message: 'Usuário criado', id: usuario.id, success: true });
     } catch (error) {
+        if (error.type === "userExists") {
+            res.status(409).json({message: 'Usuário já existe'})
+        }
         console.error("Error at SignUp: ", error);
-        res.status(500)
+        res.status(500).json({ message: 'Erro interno no servidor' });
     }
 }
 
@@ -69,9 +72,9 @@ export const ForgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
 
-        await ForgotPasswordService(email);
+        code = await ForgotPasswordService(email);
 
-        res.status(200).json({ message: "E-mail enviado" });
+        res.status(200).json({ message: "E-mail enviado", code: code});
     } catch (error) {
         console.error("Erro ao enviar e-mail para alterar senha: ", error);
         return res.status(500).json({ message: "Erro ao processar a requisição" });
