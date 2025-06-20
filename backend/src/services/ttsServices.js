@@ -120,6 +120,7 @@ export const BrailleService = async (text, userId) => {
     })
 
     console.log(result);
+
     await Text.create({
         content: text,
         user_id: userId
@@ -206,4 +207,58 @@ export const BrailleToTextService = async (braille, userId) => {
         user_id: userId
     })
     return result;
+}
+
+export const BrailleForDisplayService = async (text, userId) => {
+    const result = await BrailleService(text, userId)
+
+    const brailleToBinary = {
+        "⠁": '{1, 0, 0, 0, 0, 0}',    // a
+        "⠷": '{1, 0, 1, 1, 1, 1}',    // á
+        "⠃": '{1, 0, 1, 0, 0, 0}',    // b
+        "⠉": '{1, 1, 0, 0, 0, 0}',    // c
+        "⠯": '{1, 1, 1, 0, 1, 1}',    // ç
+        "⠙": '{1, 1, 0, 1, 0, 0}',    // d
+        "⠑": '{1, 0, 0, 1, 0, 0}',    // e
+        "⠮": '{0, 1, 1, 0, 1, 1}',    // é
+        "⠋": '{1, 1, 1, 0, 0, 0}',    // f
+        "⠛": '{1, 1, 1, 1, 0, 0}',    // g
+        "⠓": '{1, 0, 1, 1, 0, 0}',    // h
+        "⠊": '{0, 1, 1, 0, 0, 0}',    // i
+        "⠌": '{0, 1, 0, 0, 1, 0}',    // í
+        "⠚": '{0, 1, 1, 1, 0, 0}',    // j
+        "⠅": '{1, 0, 0, 0, 1, 0}',    // k
+        "⠇": '{1, 0, 1, 0, 1, 0}',    // l
+        "⠍": '{1, 1, 0, 0, 1, 0}',    // m
+        "⠝": '{1, 1, 0, 1, 1, 0}',    // n
+        "⠕": '{1, 0, 0, 1, 1, 0}',    // o
+        "⠬": '{0, 1, 0, 0, 1, 1}',    // ó
+        "⠏": '{1, 1, 1, 0, 1, 0}',    // p
+        "⠟": '{1, 1, 1, 1, 1, 0}',    // q
+        "⠗": '{1, 0, 1, 1, 1, 0}',    // r
+        "⠎": '{0, 1, 1, 0, 1, 0}',    // s
+        "⠞": '{0, 1, 1, 1, 1, 0}',    // t
+        "⠥": '{1, 0, 0, 0, 1, 1}',    // u
+        "⠾": '{0, 1, 1, 1, 1, 1}',    // ú
+        "⠧": '{1, 0, 1, 0, 1, 1}',    // v
+        "⠺": '{0, 1, 1, 1, 0, 1}',    // w
+        "⠭": '{1, 1, 0, 0, 1, 1}',    // x
+        "⠽": '{1, 1, 0, 1, 1, 1}',    // y
+        "⠵": '{1, 0, 0, 1, 1, 1}',    // z
+
+        // Sinais especiais
+        "⠠": '{0, 0, 0, 0, 0, 1}',    // maiúscula (ponto 6)
+        "⠼": '{0, 1, 0, 1, 1, 1}',    // número (pontos 3,4,5,6)
+        "⠀": '{0, 0, 0, 0, 0, 0}'     // espaço
+    };
+
+    var resultado = '{';
+
+    result.split('').map((char) => {
+        resultado += brailleToBinary[char]
+        resultado += ','
+    })
+    resultado += '};'
+    console.log(resultado);
+    return resultado
 }
