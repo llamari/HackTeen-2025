@@ -4,6 +4,7 @@ import Text from '../models/ttsModels.js';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
 import SummarizerManager from 'node-summarizer/src/SummarizerManager.js';
+import { text } from 'stream/consumers';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -63,4 +64,146 @@ export const SummariseService = async (text) => {
 export const YourTextsService = async (userId) => {
     const texts = await Text.findAll({ where: { user_id: userId } })
     return texts
+}
+
+export const BrailleService = async (text, userId) => {
+    var result = ''
+    var isNumber = false;
+    const brailleMap = {
+        "a": "⠁", "á": "⠷", "b": "⠃", "c": "⠉", "ç": "⠯", "d": "⠙", "e": "⠑",
+        "é": "⠮", "f": "⠋", "g": "⠛", "h": "⠓", "i": "⠊", "í": "⠌", "j": "⠚",
+        "k": "⠅", "l": "⠇", "m": "⠍", "n": "⠝", "o": "⠕", "ó": "⠬",
+        "p": "⠏", "q": "⠟", "r": "⠗", "s": "⠎", "t": "⠞",
+        "u": "⠥", "ú": "⠾", "v": "⠧", "w": "⠺", "x": "⠭", "y": "⠽",
+        "z": "⠵",
+
+        // Números (prefixo ⠼)
+        "1": "⠁", "2": "⠃", "3": "⠉", "4": "⠙", "5": "⠑",
+        "6": "⠋", "7": "⠛", "8": "⠓", "9": "⠊", "0": "⠚",
+
+        // Pontuação
+        ".": "⠲",
+        ",": "⠂",
+        ";": "⠆",
+        ":": "⠒",
+        "!": "⠖",
+        "?": "⠦",
+        "(": "⠐⠣",
+        ")": "⠐⠜",
+        "-": "⠤",
+        "'": "⠄",
+        "\"": "⠶",
+        "/": "⠌",
+        "@": "⠈⠁",
+        " ": "⠀"
+    };
+
+    text.split('').map((char) => {
+        if (char.match(/[A-Z]/)) {
+            result += '⠠';
+        }
+
+        if (char.match(/[0-9]/) && !isNumber) {
+            result += '⠼';  // sinal de número (só uma vez por sequência)
+            isNumber = true;
+        }
+
+        if (!char.match(/[0-9]/)) {
+            isNumber = false;  // sai do modo número
+        }
+
+        if (brailleMap[char.toLowerCase()]) {
+            result += brailleMap[char.toLowerCase()];
+        } else {
+            throw { type: 'invalid', message: 'Caractere inválido' };
+        }
+    })
+
+    console.log(result);
+    await Text.create({
+        content: text,
+        user_id: userId
+    })
+    return result;
+}
+
+export const BrailleToTextService = async (braille, userId) => {
+    var result = ''
+    var numbers = false;
+    var upperCase = false;
+    const brailleMap = {
+        "⠁": "a", "⠷": "á", "⠃": "b", "⠉": "c", "⠯": "ç", "⠙": "d", "⠑": "e",
+        "⠮": "é", "⠋": "f", "⠛": "g", "⠓": "h", "⠊": "i", "⠌": "í", "⠚": "j",
+        "⠅": "k", "⠇": "l", "⠍": "m", "⠝": "n", "⠕": "o", "⠬": "ó",
+        "⠏": "p", "⠟": "q", "⠗": "r", "⠎": "s", "⠞": "t",
+        "⠥": "u", "⠾": "ú", "⠧": "v", "⠺": "w", "⠭": "x", "⠽": "y",
+        "⠵": "z",
+
+        // Números (prefixo ⠼)
+
+
+        "⠲": ".",
+        "⠂": ",",
+        "⠆": ";",
+        "⠒": ":",
+        "⠖": "!",
+        "⠦": "?",
+        "⠐⠣": "(",
+        "⠐⠜": ")",
+        "⠤": "-",
+        "⠄": "'",
+        "⠶": "\"",
+        "⠌": "/",
+        "⠈⠁": "@",
+        "⠀": " "
+    };
+
+    const brailleNumbers = {
+        "⠁": "1", "⠃": "2", "⠉": "3", "⠙": "4", "⠑": "5",
+        "⠋": "6", "⠛": "7", "⠓": "8", "⠊": "9", "⠚": "0",
+    }
+
+    braille.split('').map((char) => {
+        if (char == '⠼') {
+            numbers = true;
+        } else {
+            if (numbers) {
+                var num = brailleNumbers[char];
+                if (num) {
+                    result += num
+                    num = null
+                } else {
+                    numbers = false;
+                    result += brailleMap[char];
+                }
+            } else {
+                if (char == '⠠') {
+                    upperCase = true;
+                } else {
+                    if (upperCase) {
+                        var letter = brailleMap[char]
+                        if (letter) {
+                            result += letter.toUpperCase()
+                        }
+                        upperCase = false
+                    } else {
+                        upperCase = false
+                        var letter = brailleMap[char]
+                        if (letter) {
+                            result += brailleMap[char];
+                        } else {
+                            throw { type: 'invalid', message: 'Caractere inválido' };
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+    console.log(result);
+    await Text.create({
+        content: result,
+        user_id: userId
+    })
+    return result;
 }

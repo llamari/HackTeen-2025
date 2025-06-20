@@ -11,7 +11,7 @@ export const GetUsersService = async () => {
 }
 
 export const SignUpService = async (email, password) => { 
-    const password = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const userExists = await User.findOne({where: {email: email}})
 
@@ -21,7 +21,7 @@ export const SignUpService = async (email, password) => {
     
     const user = await User.create({ 
         email: email,
-        password: password,
+        password: hashedPassword,
         code: null
     })
 

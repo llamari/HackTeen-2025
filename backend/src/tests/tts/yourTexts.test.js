@@ -8,17 +8,17 @@ let token;
 
 beforeAll(async () => {
     const hashedPassword = await bcrypt.hash("123", 10);
-    await User.destroy({ where: { email: "saralamari6@teste.com" } });
+    await User.destroy({ where: { email: "saralamari7@teste.com" } });
     await User.create({
-        email: "saralamari6@teste.com",
+        email: "saralamari7@teste.com",
         password: hashedPassword
     });
 
-    const user = await User.findOne({where: {email: 'saralamari6@teste.com'}})
+    const user = await User.findOne({ where: { email: 'saralamari7@teste.com' } })
 
     const res = await request(app)
         .put('/users/signin')
-        .send({ email: 'saralamari6@teste.com', senha: '123' });
+        .send({ email: 'saralamari7@teste.com', password: '123' });
 
     await Text.create({
         content: "Olá mundo! Esse é um teste.",
@@ -26,6 +26,7 @@ beforeAll(async () => {
     });
 
     token = res.body.token;
+    console.log("TOKEN GERADO:", token);
 });
 
 afterAll(async () => {

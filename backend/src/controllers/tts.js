@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { SummariseService, TextToSoundService, YourTextsService } from '../services/ttsServices.js';
+import { BrailleService, BrailleToTextService, SummariseService, TextToSoundService, YourTextsService } from '../services/ttsServices.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -63,5 +63,34 @@ export const YourTexts = async (req, res) => {
   const userId = req.user.id;
   const texts = await YourTextsService(userId);
 
-  res.json({texts: texts});
+  res.json({ texts: texts });
+}
+
+export const Braille = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { text } = req.body;
+    const result = await BrailleService(text, userId);
+    res.send({ result: result });
+  } catch (error) {
+    if (error.type == "invalid") {
+      return res.status(400).json({ error: error.message })
+    }
+    return res.status(500).json({ error: 'Erro inesperado.' });
+  }
+}
+
+export const BrailleToText = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { braille } = req.body;
+    const result = await BrailleToTextService(braille, userId);
+    res.send({ result: result });
+  } catch (error) {
+    if (error.type == "invalid") {
+      return res.status(400).json({ error: error.message })
+    }
+    return res.status(500).json({ error: 'Erro inesperado.' });
+  }
+
 }

@@ -20,7 +20,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-    await Usuario.destroy({ where: { email: 'saralamari5@teste.com' } });
+    await User.destroy({ where: { email: 'saralamari5@teste.com' } });
 });
 
 describe('Teste do endpoint /tts/summarize', () => {

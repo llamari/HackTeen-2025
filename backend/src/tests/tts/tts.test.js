@@ -41,6 +41,13 @@ afterEach(() => {
 });
 
 afterAll(async () => {
+    const files = fs.readdirSync(__dirname);
+    files.forEach(file => {
+        if (file.endsWith('.mp3')) {
+            fs.unlinkSync(path.join(__dirname, file));
+        }
+    });
+
     await User.destroy({ where: { email: 'saralamari4@teste.com' } });
 });
 

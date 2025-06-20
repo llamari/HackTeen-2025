@@ -25,7 +25,7 @@ beforeAll(async () => {
 
     const res = await request(app)
         .put('/users/signin')
-        .send({ email: 'saralamari2@teste.com', senha: '123' });
+        .send({ email: 'saralamari2@teste.com', password: '123' });
 
     token = res.body.token;
 });
