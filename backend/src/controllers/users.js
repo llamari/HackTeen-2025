@@ -101,10 +101,10 @@ export const Verify = async (req, res) => {
 
 export const NewPassword = async (req, res) => {
     try {
-        const { password, email } = req.body;    // corrigir
-        if (!password || !email) return res.status(400).send("Informações essenciais faltando");  // corrigir
+        const { password, email } = req.body;   
+        if (!password || !email) return res.status(400).send("Informações essenciais faltando");  
 
-        await NewPasswordService(email, password);  // corrigir
+        await NewPasswordService(email, password);  
 
         return res.status(202).json({ message: "Senha mudada", success: true })
     } catch (error) {
