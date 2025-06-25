@@ -1,44 +1,44 @@
 import request from 'supertest';
-import app from '../../../server.js';
+import app from '../../../../server.js';
 import bcrypt from 'bcryptjs';
-import User from '../../models/usersModels.js';
+import User from '../../../models/usersModels.js';
 
 let token;
 
 beforeAll(async () => {
     const hashedPassword = await bcrypt.hash("123", 10);
-    await User.destroy({ where: { email: "saralamari9@teste.com" } });
+    await User.destroy({ where: { email: "saralamari8@teste.com" } });
     await User.create({
-        email: "saralamari9@teste.com",
+        email: "saralamari8@teste.com",
         password: hashedPassword
     });
 
     const res = await request(app)
         .put('/users/signin')
-        .send({ email: 'saralamari9@teste.com', password: '123' });
+        .send({ email: 'saralamari8@teste.com', password: '123' });
     token = res.body.token;
 });
 
 afterAll(async () => {
-    await User.destroy({ where: { email: 'saralamari9@teste.com' } });
+    await User.destroy({ where: { email: 'saralamari8@teste.com' } });
 });
 
-describe('Teste da conversão de braille para textp', ()=> {
-    it('Deve retornar o texto corretamente', async() => {
+describe('Teste da conversão de texto para braille', ()=> {
+    it('Deve retornar um código em braille corretamente', async() => {
         res = await request(app)
-        .post('/tts/brailleToText')
+        .post('/tts/textToBraille')
         .set(`Authorization`,  `Bearer ${token}`)
-        .send({braille: "⠠⠞⠑⠎⠞⠑⠒⠀⠠⠕⠇⠷⠂⠀⠍⠥⠝⠙⠕⠖⠀⠼⠁⠃⠉"})
+        .send({text: "Teste: Olá, mundo! 123"})
 
         expect(res.status).toBe(200)
-        expect(res.body.result).toBe('Teste: Olá, mundo! 123')
+        expect(res.body.result).toBe('⠠⠞⠑⠎⠞⠑⠒⠀⠠⠕⠇⠷⠂⠀⠍⠥⠝⠙⠕⠖⠀⠼⠁⠃⠉')
     })
 
     it('Deve retornar caractere inválido', async () =>{
         res = await request(app)
-        .post('/tts/brailleToText')
+        .post('/tts/textToBraille')
         .set('Authorization', `Bearer ${token}`)
-        .send({braille: 'teste invalido ⠞' })
+        .send({text: 'teste invalido ⠞' })
 
         expect(res.status).toBe(400)
         expect(res.body).toHaveProperty('error')

@@ -1,14 +1,14 @@
 // test/forgotPassword.test.js (ou onde estiver)
 import request from 'supertest';
-import app from '../../../server.js';
+import app from '../../../../server.js';
 import { expect, jest } from '@jest/globals';
-import User from '../../models/usersModels.js';
+import User from '../../../models/usersModels.js';
 import bcrypt from 'bcryptjs';
 
 let code;
 
 // Mock do módulo que envia e-mail
-jest.unstable_mockModule('../../utils/sendEmail.js', () => ({
+jest.unstable_mockModule('../../../utils/sendEmail.js', () => ({
     sendEmailWithPassword: jest.fn(() => Promise.resolve()),
 }));
 

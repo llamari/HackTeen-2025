@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../../../server.js';
-import User from '../../models/usersModels.js';
+import app from '../../../../server.js';
+import User from '../../../models/usersModels.js';
 
 beforeAll(async() => {
     await User.destroy({where: {email: 'sara.silva591@etec.sp.gov.br'}})

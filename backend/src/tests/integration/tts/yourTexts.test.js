@@ -1,8 +1,8 @@
 import request from 'supertest';
-import app from '../../../server.js';
+import app from '../../../../server.js';
 import bcrypt from 'bcryptjs';
-import User from '../../models/usersModels.js';
-import Text from '../../models/ttsModels.js';
+import User from '../../../models/usersModels.js';
+import Text from '../../../models/ttsModels.js';
 
 let token;
 

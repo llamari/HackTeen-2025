@@ -1,18 +1,18 @@
 import request from 'supertest';
 import { jest } from '@jest/globals';
-import app from '../../../server.js';
+import app from '../../../../server.js';
 import path from 'path';
 import fs from 'fs';
-import { TextToSoundService } from '../../services/ttsServices.js';
+import { TextToSoundService } from '../../../services/ttsServices.js';
 import bcrypt from 'bcryptjs';
-import User from '../../models/usersModels.js';
+import User from '../../../models/usersModels.js';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const mockTextToSoundService = jest.fn();
-jest.unstable_mockModule('../../services/ttsServices.js', () => ({
+jest.unstable_mockModule('../../../services/ttsServices.js', () => ({
     TextToSoundService: mockTextToSoundService
 }));
 

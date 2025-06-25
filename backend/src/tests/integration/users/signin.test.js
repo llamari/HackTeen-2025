@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../../../server.js';
-import User from '../../models/usersModels.js';
+import app from '../../../../server.js';
+import User from '../../../models/usersModels.js';
 import bcrypt from 'bcryptjs';
 
 beforeAll(async () => {
