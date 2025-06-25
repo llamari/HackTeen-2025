@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 
-jest.unstable_mockModule('../../../services/ttsServices.js', () => ({
+jest.unstable_mockModule('../../services/ttsServices.js', () => ({
     TextToSoundService: jest.fn(),
     SummariseService: jest.fn(),
     YourTextsService: jest.fn(),
@@ -14,7 +14,7 @@ describe('Testes do TTS', () => {
     let ttsServices;
 
     beforeEach(async () => {
-        const controller = await import('../../../controllers/tts.js'); //Conectar com os controllers
+        const controller = await import('../../controllers/tts.js'); //Conectar com os controllers
         TextToSound = controller.TextToSound;
         Summarise = controller.Summarise;
         YourTexts = controller.YourTexts;
@@ -22,7 +22,7 @@ describe('Testes do TTS', () => {
         BrailleToText = controller.BrailleToText;
         BrailleForDisplay = controller.BrailleForDisplay;
 
-        ttsServices = await import('../../../services/ttsServices.js'); //Conectar com os services
+        ttsServices = await import('../../services/ttsServices.js'); //Conectar com os services
     });
 
     const mockRequest = (body = {}, user = {}) => ({ body, user }); //requisição

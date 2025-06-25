@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 
 //"mockar" antes de tudo
-jest.unstable_mockModule('../../../services/usersServices.js', () => ({
+jest.unstable_mockModule('../../services/usersServices.js', () => ({
     GetUsersService: jest.fn(),
     SignInService: jest.fn(),
     SignUpService: jest.fn(),
@@ -28,7 +28,7 @@ describe('Testes do Users', () => {
     };
 
     beforeEach(async () => {
-        const controller = await import('../../../controllers/users.js'); //Atribuição dos valores das variaveis
+        const controller = await import('../../controllers/users.js'); //Atribuição dos valores das variaveis
         GetUsers = controller.GetUsers;
         SignIn = controller.SignIn;
         SignUp = controller.SignUp; 
@@ -37,7 +37,7 @@ describe('Testes do Users', () => {
         Verify = controller.Verify;
         NewPassword = controller.NewPassword;
 
-        usersServices = await import('../../../services/usersServices.js');
+        usersServices = await import('../../services/usersServices.js');
     });
 
     afterEach(() => {
