@@ -100,8 +100,8 @@ export const Verify = async (req, res) => {
 }
 
 export const NewPassword = async (req, res) => {
+    const { password, email } = req.body;   
     try {
-        const { password, email } = req.body;   
         if (!password || !email) return res.status(400).send("Informações essenciais faltando");  
 
         await NewPasswordService(email, password);  
