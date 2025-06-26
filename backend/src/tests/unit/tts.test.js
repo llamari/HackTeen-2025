@@ -22,6 +22,7 @@ describe('Testes do TTS', () => {
         Braille = controller.Braille;
         BrailleToText = controller.BrailleToText;
         BrailleForDisplay = controller.BrailleForDisplay;
+        DescribeImage = controller.DescribeImage;
 
         ttsServices = await import('../../services/ttsServices.js'); //Conectar com os services
     });
@@ -134,6 +135,31 @@ describe('Testes do TTS', () => {
         await YourTexts(req, res);
         expect(res.json).toHaveBeenCalledWith({ texts });
     }); // Sucesso
+
+    // DescribeImage 
+    test('DescribeImage deve retornar resultado', async () => {
+        const req = mockRequest({ imageBase64: 'data:image/jpeg;base64,fakeImage' })
+        const res = mockResponse();
+        ttsServices.DescribeImageService.mockResolvedValue('Imagem de um gato sorrindo');
+        await DescribeImage(req, res);
+        expect(res.json).toHaveBeenCalledWith({ description: 'Imagem de um gato sorrindo' });
+    }); //Sucesso
+
+    test('DescribeImage deve retornar 400 se não houver imagem ', async () => {
+        const req = mockRequest({ imageBase64: '' })
+        const res = mockResponse();
+        await DescribeImage(req, res);
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({ error: 'A imagem é obrigatória.' });
+    }); //Falha 1
+    test('DescribeImage deve retornar 500 em erro do serviço ', async () => {
+        const req = mockRequest({ imageBase64: 'data:image/jpeg;base64,fakeImage' })
+        const res = mockResponse();
+        ttsServices.DescribeImageService.mockRejectedValue(new Error("Erro ao processar imagem."));
+        await DescribeImage(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro ao processar imagem.' });
+    }); //Falha 2
 
     // Braille
     test('Braille deve retornar 200 com resultado', async () => {
