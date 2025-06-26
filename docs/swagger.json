@@ -28,11 +28,10 @@
     "paths": {
         "/users": {
             "get": {
-                "tags": [
-                    "Users"
-                ],
+                "tags": ["Users"],
                 "summary": "Lista todos os usuários",
-                "description": "Retorna todos os usuários cadastrados.",
+                "security": [{"bearerAuth": []}],
+                "description": "Retorna todos os usuários cadastrados (requer autenticação).",
                 "responses": {
                     "200": {
                         "description": "Lista de usuários retornada com sucesso",
@@ -40,53 +39,33 @@
                             "application/json": {
                                 "schema": {
                                     "type": "array",
-                                    "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer"
-                                            },
-                                            "email": {
-                                                "type": "string"
-                                            },
-                                            "password": {
-                                                "type": "string"
-                                            },
-                                            "code": {
-                                                "type": "string"
-                                            },
-                                            "createdAt": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            },
-                                            "updatedAt": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            }
-                                        }
-                                    }
+                                    "items": {"$ref": "#/components/schemas/User"}
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token não fornecido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 },
-                                "examples": {
-                                    "success": {
-                                        "value": [
-                                            {
-                                                "id": 1,
-                                                "email": "usuario1@exemplo.com",
-                                                "password": "senha1criptografada",
-                                                "code": null,
-                                                "createdAt": "2025-06-15T13:41:30.831Z",
-                                                "updatedAt": "2025-06-15T13:41:30.831Z"
-                                            },
-                                            {
-                                                "id": 2,
-                                                "email": "usuario2@exemplo.com",
-                                                "password": "senha2criptografada",
-                                                "code": "1234",
-                                                "createdAt": "2025-05-10T13:41:30.831Z",
-                                                "updatedAt": "2025-05-15T13:41:30.831Z"
-                                            }
-                                        ]
-                                    }
+                                "example": {
+                                    "message": "Token não fornecido"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Token inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                },
+                                "example": {
+                                    "message": "Token inválido"
                                 }
                             }
                         }
@@ -96,32 +75,15 @@
         },
         "/users/signup": {
             "post": {
-                "tags": [
-                    "Users"
-                ],
+                "tags": ["Users"],
                 "summary": "Registra um novo usuário",
+                "description": "Rota pública para registro de novos usuários.",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "email": "usuario@exemplo.com",
-                                "password": "senhaSegura123"
+                                "$ref": "#/components/schemas/SignUpRequest"
                             }
                         }
                     }
@@ -132,24 +94,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "success": {
-                                            "type": "boolean"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "Usuário criado",
-                                            "id": 1,
-                                            "success": true
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/SignUpResponse"
                                 }
                             }
                         }
@@ -159,41 +104,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "userExists": {
-                                        "value": {
-                                            "message": "Usuário já existe"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro interno no servidor",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro interno no servidor"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -203,145 +114,46 @@
         },
         "/users/signin": {
             "put": {
-                "tags": [
-                    "Users"
-                ],
+                "tags": ["Users"],
                 "summary": "Faz login de um usuário",
+                "description": "Rota pública para autenticação de usuários.",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "email": "usuario@exemplo.com",
-                                "password": "senhaSegura123"
+                                "$ref": "#/components/schemas/SignInRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "400": {
-                        "description": "Campos não preenchidos",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "success": {
-                                            "type": "boolean"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "badRequest": {
-                                        "value": {
-                                            "message": "Email e senha são obrigatórios",
-                                            "success": false
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
                     "200": {
                         "description": "Login realizado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "token": {
-                                            "type": "string"
-                                        },
-                                        "success": {
-                                            "type": "boolean"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "success": true,
-                                            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImV4cCI6MTYyODg3NzYwMX0.6kUJdxk_wfh7DdYhTqT8GVXXd04-K35UkK73D7h4ZPQ",
-                                            "message": "Login realizado com sucesso"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/SignInResponse"
                                 }
                             }
                         }
                     },
                     "401": {
-                        "description": "Erro de autenticação",
+                        "description": "Credenciais inválidas",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "success": {
-                                            "value": "boolean"
-                                        },
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "invalidCredentials": {
-                                        "value": {
-                                            "message": "Erro de autenticação",
-                                            "success": false,
-                                            "error": "Unauthorized"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro interno no servidor",
+                    "403": {
+                        "description": "Token inválido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "success": "boolean",
-                                            "error": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro no servidor",
-                                            "success": false,
-                                            "error": "Internal Server Error"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -351,85 +163,47 @@
         },
         "/users/delete": {
             "delete": {
-                "tags": [
-                    "Users"
-                ],
+                "tags": ["Users"],
                 "summary": "Remove um usuário",
+                "security": [{"bearerAuth": []}],
+                "description": "Remove um usuário do sistema (requer autenticação).",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "required": [
-                                    "email"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "email": "usuario@exemplo.com"
+                                "$ref": "#/components/schemas/DeleteUserRequest"
                             }
                         }
                     }
                 },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "Usuário removido com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "Usuário deletado com sucesso",
-                                            "success": true
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/SuccessResponse"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro interno no servidor",
+                    "401": {
+                        "description": "Token não fornecido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "success": "boolean",
-                                            "error": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro no servidor",
-                                            "success": false,
-                                            "error": "Internal Server Error"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Token inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -439,27 +213,15 @@
         },
         "/users/forgot/password": {
             "put": {
-                "tags": [
-                    "Users"
-                ],
+                "tags": ["Users"],
                 "summary": "Solicita redefinição de senha",
+                "description": "Rota pública para solicitar redefinição de senha.",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "required": [
-                                    "email"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "email": "usuario@exemplo.com"
+                                "$ref": "#/components/schemas/ForgotPasswordRequest"
                             }
                         }
                     }
@@ -470,41 +232,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "E-mail enviado"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro ao processar a requisição",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro ao processar a requisição"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/SuccessResponse"
                                 }
                             }
                         }
@@ -514,32 +242,15 @@
         },
         "/users/verify/code": {
             "put": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Verifica código de redefinição de senha",
+                "tags": ["Users"],
+                "summary": "Verifica código de redefinição",
+                "description": "Rota pública para verificar código de redefinição de senha.",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "required": [
-                                    "code",
-                                    "email"
-                                ],
-                                "properties": {
-                                    "code": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "code": "123456",
-                                "email": "usuario@exemplo.com"
+                                "$ref": "#/components/schemas/VerifyCodeRequest"
                             }
                         }
                     }
@@ -550,45 +261,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "success": {
-                                            "type": "boolean"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "Usuário verificado",
-                                            "success": true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Usuário não encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "Unauthorized": {
-                                        "value": {
-                                            "message": "Usuário não encontrado"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/SuccessResponse"
                                 }
                             }
                         }
@@ -598,41 +271,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "Forbidden": {
-                                        "value": {
-                                            "message": "Código inválido"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Erro ao processar a requisição",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro ao processar a requisição"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -642,107 +281,47 @@
         },
         "/users/new/password": {
             "put": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Redefine a senha do usuário",
+                "tags": ["Users"],
+                "summary": "Redefine a senha",
+                "security": [{"bearerAuth": []}],
+                "description": "Redefine a senha do usuário (requer autenticação).",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "required": [
-                                    "password",
-                                    "email"
-                                ],
-                                "properties": {
-                                    "password": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "password": "novaSenhaSegura123",
-                                "email": "usuario@exemplo.com"
+                                "$ref": "#/components/schemas/NewPasswordRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "400": {
-                        "description": "Campos não preenchidos",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "success": {
-                                            "type": "boolean"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "badRequest": {
-                                        "value": {
-                                            "message": "Informações essenciais faltando",
-                                            "success": false
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
                     "202": {
                         "description": "Senha redefinida com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "success": {
-                                            "type": "boolean"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "Senha mudada",
-                                            "success": true
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/SuccessResponse"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro ao processar a requisição",
+                    "401": {
+                        "description": "Token não fornecido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro ao processar a requisição"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Token inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -752,37 +331,16 @@
         },
         "/tts": {
             "post": {
-                "tags": [
-                    "Text to Sound"
-                ],
+                "tags": ["Text to Sound"],
                 "summary": "Converte texto em áudio",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "security": [{"bearerAuth": []}],
+                "description": "Converte texto em áudio (requer autenticação).",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "required": [
-                                    "text",
-                                    "language"
-                                ],
-                                "properties": {
-                                    "text": {
-                                        "type": "string"
-                                    },
-                                    "language": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "text": "Olá, mundo!",
-                                "language": "pt-br"
+                                "$ref": "#/components/schemas/TTSRequest"
                             }
                         }
                     }
@@ -794,63 +352,27 @@
                             "application/octet-stream": {
                                 "schema": {
                                     "type": "string",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    },
                                     "format": "binary"
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "Arquivo de áudio gerado com sucesso"
-                                        }
-                                    }
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "description": "Texto ou idioma não fornecido",
+                    "401": {
+                        "description": "Token não fornecido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "badRequest": {
-                                        "value": {
-                                            "message": "Texto ou idioma não fornecido"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro no processamento do áudio",
+                    "403": {
+                        "description": "Token inválido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro no processamento do áudio"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -860,99 +382,97 @@
         },
         "/tts/summarize": {
             "post": {
-                "tags": [
-                    "Text to Sound"
-                ],
+                "tags": ["Text to Sound"],
                 "summary": "Resume um texto",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "security": [{"bearerAuth": []}],
+                "description": "Resume um texto (requer autenticação).",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "required": [
-                                    "text"
-                                ],
-                                "properties": {
-                                    "text": {
-                                        "type": "string"
-                                    }
-                                }
-                            },
-                            "example": {
-                                "text": "Este é um texto longo que precisa ser resumido."
+                                "$ref": "#/components/schemas/SummarizeRequest"
                             }
                         }
                     }
                 },
                 "responses": {
-                    "400": {
-                        "description": "Texto não fornecido",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "badRequest": {
-                                        "value": {
-                                            "message": "Texto não fornecido"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
                     "200": {
                         "description": "Resumo gerado com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "string",
-                                    "properties": {
-                                        "summary": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "summary": "Texto resumido"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/SummarizeResponse"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro inesperado durante o resumo",
+                    "401": {
+                        "description": "Token não fornecido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "error": "Erro durante o resumo"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Token inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tts/describeImage": {
+            "post": {
+                "tags": ["Text to Sound"],
+                "summary": "Descreve uma imagem",
+                "security": [{"bearerAuth": []}],
+                "description": "Descreve uma imagem enviada (requer autenticação).",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DescribeImageRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Descrição gerada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DescribeImageResponse"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token não fornecido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Token inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -962,15 +482,10 @@
         },
         "/tts/yourtexts": {
             "get": {
-                "tags": [
-                    "Text to Sound"
-                ],
+                "tags": ["Text to Sound"],
                 "summary": "Lista textos do usuário",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "security": [{"bearerAuth": []}],
+                "description": "Lista todos os textos do usuário autenticado.",
                 "responses": {
                     "200": {
                         "description": "Lista de textos retornada com sucesso",
@@ -979,47 +494,28 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "integer"
-                                            },
-                                            "content": {
-                                                "type": "string"
-                                            },
-                                            "user_id": {
-                                                "type": "integer"
-                                            },
-                                            "createdAt": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            },
-                                            "updatedAt": {
-                                                "type": "string",
-                                                "format": "date-time"
-                                            }
-                                        }
+                                        "$ref": "#/components/schemas/UserText"
                                     }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": [
-                                            {
-                                                "id": 1,
-                                                "content": "Olá, mundo!",
-                                                "user_id": 1,
-                                                "createdAt": "2025-06-15T15:45:11.233Z",
-                                                "updatedAt": "2025-06-15T15:45:11.233Z"
-                                            },
-                                            {
-                                                "id": 2,
-                                                "content": "Tchau, mundo!",
-                                                "user_id": 1,
-                                                "createdAt": "2025-06-16T15:45:11.233Z",
-                                                "updatedAt": "2025-06-16T15:45:11.233Z"
-                                            }
-                                        ]
-                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token não fornecido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Token inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -1029,107 +525,47 @@
         },
         "/tts/textToBraille": {
             "post": {
-                "tags": [
-                    "Text to Braille"
-                ],
+                "tags": ["Text to Braille"],
                 "summary": "Converte texto em Braille",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "security": [{"bearerAuth": []}],
+                "description": "Converte texto para Braille (requer autenticação).",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "text": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "text"
-                                ]
-                            },
-                            "example": {
-                                "text": "Olá, mundo!"
+                                "$ref": "#/components/schemas/TextToBrailleRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Texto convertido para Braille com sucesso",
+                        "description": "Texto convertido com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "text": {
-                                            "type": "string"
-                                        },
-                                        "id": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "Texto convertido para Braille com sucesso",
-                                            "text": "⠓⠊⠝⠕⠗⠊⠑⠝⠞⠊⠑⠝⠞⠊⠑",
-                                            "id": 1
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/TextToBrailleResponse"
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "description": "Texto não fornecido",
+                    "401": {
+                        "description": "Token não fornecido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "badRequest": {
-                                        "value": {
-                                            "message": "Texto não fornecido"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro ao processar o texto",
+                    "403": {
+                        "description": "Token inválido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro ao processar o texto"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -1139,107 +575,47 @@
         },
         "/tts/brailleToText": {
             "post": {
-                "tags": [
-                    "Text to Braille"
-                ],
+                "tags": ["Text to Braille"],
                 "summary": "Converte Braille em texto",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "security": [{"bearerAuth": []}],
+                "description": "Converte Braille para texto (requer autenticação).",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "braille": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "braille"
-                                ]
-                            },
-                            "example": {
-                                "braille": "⠓⠊⠝⠕⠗⠊⠑⠝⠞⠊⠑⠝⠞⠊⠑"
+                                "$ref": "#/components/schemas/BrailleToTextRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Braille convertido para texto com sucesso",
+                        "description": "Braille convertido com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "text": {
-                                            "type": "string"
-                                        },
-                                        "id": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "Braille convertido para texto com sucesso",
-                                            "text": "Olá, mundo!",
-                                            "id": 1
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/BrailleToTextResponse"
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "description": "Texto em Braille não fornecido",
+                    "401": {
+                        "description": "Token não fornecido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "badRequest": {
-                                        "value": {
-                                            "message": "Texto em Braille não fornecido"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro ao processar o Braille",
+                    "403": {
+                        "description": "Token inválido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro ao processar o Braille"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -1249,107 +625,47 @@
         },
         "/tts/brailleDisplay": {
             "post": {
-                "tags": [
-                    "Text to Braille"
-                ],
-                "summary": "Exibe em binário o texto para o Display Braille",
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ],
+                "tags": ["Text to Braille"],
+                "summary": "Gera dados para display Braille",
+                "security": [{"bearerAuth": []}],
+                "description": "Gera dados para exibição em display Braille (requer autenticação).",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "text": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "text"
-                                ]
-                            },
-                            "example": {
-                                "text": "Olá, mundo!"
+                                "$ref": "#/components/schemas/BrailleDisplayRequest"
                             }
                         }
                     }
                 },
                 "responses": {
                     "200": {
-                        "description": "Texto exibido em binário com sucesso",
+                        "description": "Dados gerados com sucesso",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "text": {
-                                            "type": "string"
-                                        },
-                                        "id": {
-                                            "type": "integer"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "success": {
-                                        "value": {
-                                            "message": "Texto exibido em binário com sucesso",
-                                            "text": "01001111 01101100 11100001 00101100 00100000 01101101 01110101 01101110 01100100 01101111",
-                                            "id": 1
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/BrailleDisplayResponse"
                                 }
                             }
                         }
                     },
-                    "400": {
-                        "description": "Texto não fornecido",
+                    "401": {
+                        "description": "Token não fornecido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "badRequest": {
-                                        "value": {
-                                            "message": "Texto não fornecido"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
                     },
-                    "500": {
-                        "description": "Erro ao exibir o texto em binário",
+                    "403": {
+                        "description": "Token inválido",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                },
-                                "examples": {
-                                    "serverError": {
-                                        "value": {
-                                            "message": "Erro ao exibir o texto em binário"
-                                        }
-                                    }
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -1363,7 +679,209 @@
             "bearerAuth": {
                 "type": "http",
                 "scheme": "bearer",
-                "bearerFormat": "JWT"
+                "bearerFormat": "JWT",
+                "description": "Token JWT obtido no login. Deve ser incluído no cabeçalho Authorization como 'Bearer {token}'"
+            }
+        },
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "email": {"type": "string"},
+                    "password": {"type": "string"},
+                    "code": {"type": "string"},
+                    "createdAt": {"type": "string", "format": "date-time"},
+                    "updatedAt": {"type": "string", "format": "date-time"}
+                }
+            },
+            "SignUpRequest": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                    "email": {"type": "string", "format": "email"},
+                    "password": {"type": "string", "minLength": 6}
+                }
+            },
+            "SignUpResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "id": {"type": "integer"},
+                    "success": {"type": "boolean"}
+                }
+            },
+            "SignInRequest": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                    "email": {"type": "string", "format": "email"},
+                    "password": {"type": "string"}
+                }
+            },
+            "SignInResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "token": {"type": "string"},
+                    "success": {"type": "boolean"}
+                }
+            },
+            "DeleteUserRequest": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                    "email": {"type": "string", "format": "email"}
+                }
+            },
+            "ForgotPasswordRequest": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                    "email": {"type": "string", "format": "email"}
+                }
+            },
+            "VerifyCodeRequest": {
+                "type": "object",
+                "required": ["code", "email"],
+                "properties": {
+                    "code": {"type": "string"},
+                    "email": {"type": "string", "format": "email"}
+                }
+            },
+            "NewPasswordRequest": {
+                "type": "object",
+                "required": ["password", "email"],
+                "properties": {
+                    "password": {"type": "string"},
+                    "email": {"type": "string", "format": "email"}
+                }
+            },
+            "TTSRequest": {
+                "type": "object",
+                "required": ["text", "language"],
+                "properties": {
+                    "text": {"type": "string"},
+                    "language": {"type": "string"}
+                }
+            },
+            "SummarizeRequest": {
+                "type": "object",
+                "required": ["text"],
+                "properties": {
+                    "text": {"type": "string"}
+                }
+            },
+            "SummarizeResponse": {
+                "type": "object",
+                "properties": {
+                    "summary": {"type": "string"}
+                }
+            },
+            "DescribeImageRequest": {
+                "type": "object",
+                "required": ["imageBase64"],
+                "properties": {
+                    "imageBase64": {"type": "string"}
+                }
+            },
+            "DescribeImageResponse": {
+                "type": "object",
+                "properties": {
+                    "description": {"type": "string"}
+                }
+            },
+            "UserText": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "integer"},
+                    "content": {"type": "string"},
+                    "user_id": {"type": "integer"},
+                    "createdAt": {"type": "string", "format": "date-time"},
+                    "updatedAt": {"type": "string", "format": "date-time"}
+                }
+            },
+            "TextToBrailleRequest": {
+                "type": "object",
+                "required": ["text"],
+                "properties": {
+                    "text": {"type": "string"}
+                }
+            },
+            "TextToBrailleResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "text": {"type": "string"},
+                    "id": {"type": "integer"}
+                }
+            },
+            "BrailleToTextRequest": {
+                "type": "object",
+                "required": ["braille"],
+                "properties": {
+                    "braille": {"type": "string"}
+                }
+            },
+            "BrailleToTextResponse": {
+                "type": "object",
+                "properties": {
+                    "result": {"type": "string"}
+                }
+            },
+            "BrailleDisplayRequest": {
+                "type": "object",
+                "required": ["text"],
+                "properties": {
+                    "text": {"type": "string"}
+                }
+            },
+            "BrailleDisplayResponse": {
+                "type": "object",
+                "properties": {
+                    "result": {"type": "string"}
+                }
+            },
+            "SuccessResponse": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "success": {"type": "boolean"}
+                }
+            },
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "error": {"type": "string"},
+                    "success": {"type": "boolean"}
+                }
+            }
+        },
+        "responses": {
+            "UnauthorizedError": {
+                "description": "Token de autenticação ausente ou inválido",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Error"
+                        },
+                        "examples": {
+                            "noToken": {
+                                "value": {
+                                    "message": "Token não fornecido",
+                                    "success": false
+                                }
+                            },
+                            "invalidToken": {
+                                "value": {
+                                    "message": "Token inválido",
+                                    "success": false
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

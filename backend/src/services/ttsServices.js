@@ -61,6 +61,40 @@ export const SummariseService = async (text) => {
     }
 };
 
+export const DescribeImageService = async (imageBase64) => {
+    try {
+        const requestBody = {
+            contents: [
+                {
+                    parts: [
+                        {
+                            inlineData: {
+                                mimeType: "image/jpeg", // ou "image/png"
+                                data: imageBase64
+                            }
+                        },
+                        {
+                            text: "Descreva detalhadamente o conteúdo visual desta imagem. Se houver textos, os repitá-os em sua resposta."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        const API_KEY = process.env.API_KEY;
+        const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+        const response = await axios.post(API_URL, requestBody);
+
+        const result = response.data.candidates[0]?.content?.parts[0]?.text || 'Não foi possível gerar uma descrição.';
+        return result;
+
+    } catch (error) {
+        console.error('Erro ao descrever imagem:', error.response?.data || error.message);
+        return 'Erro ao gerar descrição.';
+    }
+};
+
 export const YourTextsService = async (userId) => {
     const texts = await Text.findAll({ where: { user_id: userId } })
     return texts
@@ -249,7 +283,22 @@ export const BrailleForDisplayService = async (text, userId) => {
         // Sinais especiais
         "⠠": '{0, 0, 0, 0, 0, 1}',    // maiúscula (ponto 6)
         "⠼": '{0, 1, 0, 1, 1, 1}',    // número (pontos 3,4,5,6)
-        "⠀": '{0, 0, 0, 0, 0, 0}'     // espaço
+
+        //pontuação
+        "⠲": "{0, 0, 1, 1, 0, 1}",
+        "⠂": "{0, 0, 1, 0, 0, 0}",
+        "⠆": "{0, 0, 1, 0, 1, 0}",
+        "⠒": "{0, 0, 1, 1, 0, 0}",
+        "⠖": "{0, 0, 1, 1, 1, 0}",
+        "⠦": "{0, 0, 1, 0, 1, 1}",
+        "⠐⠣": "{0, 0, 0, 1, 0, 0}, {1, 0, 1, 0, 0, 1}",
+        "⠐⠜": "{0, 0, 0, 1, 0, 0}, {0, 1, 0, 1, 1, 0}",
+        "⠤": "{0, 0, 0, 0, 1, 1}",
+        "⠄": "{0, 0, 0, 0, 1, 0}",
+        "⠶": "{0, 0, 1, 1, 1, 1}",
+        "⠌": "{0, 1, 0, 0, 1, 0}",
+        "⠈⠁": "{0, 1, 0, 0, 0, 0}, {1, 0, 0, 0, 0, 0}",
+        "⠀": "{0, 0, 0, 0, 0, 0}"
     };
 
     var resultado = '{';

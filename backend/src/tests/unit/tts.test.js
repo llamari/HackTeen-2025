@@ -7,6 +7,7 @@ jest.unstable_mockModule('../../services/ttsServices.js', () => ({
     BrailleService: jest.fn(),
     BrailleToTextService: jest.fn(),
     BrailleForDisplayService: jest.fn(),
+    DescribeImageService: jest.fn()
 })); //"mockar" antes de tudo
 
 describe('Testes do TTS', () => {
@@ -14,7 +15,7 @@ describe('Testes do TTS', () => {
     let ttsServices;
 
     beforeEach(async () => {
-        const controller = await import('../../controllers/tts.js'); //Conectar com os controllers
+        const controller = await import('../../controllers/ttsControllers.js'); //Conectar com os controllers
         TextToSound = controller.TextToSound;
         Summarise = controller.Summarise;
         YourTexts = controller.YourTexts;

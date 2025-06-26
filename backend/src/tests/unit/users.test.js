@@ -28,7 +28,7 @@ describe('Testes do Users', () => {
     };
 
     beforeEach(async () => {
-        const controller = await import('../../controllers/users.js'); //Atribuição dos valores das variaveis
+        const controller = await import('../../controllers/usersControllers.js'); //Atribuição dos valores das variaveis
         GetUsers = controller.GetUsers;
         SignIn = controller.SignIn;
         SignUp = controller.SignUp; 
