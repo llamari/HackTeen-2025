@@ -127,7 +127,7 @@ describe('Testes do TTS', () => {
     }); //Falha 2
 
     // YourTexts
-    test('YourTexts deve retornar os textos do usuário', async () => {
+    test('YourTexts deve retornar  200 e os textos do usuário', async () => {
         const req = mockRequest({}, { id: 42 });
         const res = mockResponse();
         const texts = [{ content: 'Texto 1' }, { content: 'Texto 2' }];
@@ -135,9 +135,18 @@ describe('Testes do TTS', () => {
         await YourTexts(req, res);
         expect(res.json).toHaveBeenCalledWith({ texts });
     }); // Sucesso
+    test('YourTexts deve retornar 500 em erro inesperado', async () => {
+        const req = mockRequest({}, { id: 42 });
+        const res = mockResponse();
+        const texts = [{ content: 'Texto 1' }, { content: 'Texto 2' }];
+        ttsServices.YourTextsService.mockRejectedValue(new Error('Erro desconhecido'));
+        await YourTexts(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado.' });
+    }) //Falha 1
 
     // DescribeImage 
-    test('DescribeImage deve retornar resultado', async () => {
+    test('DescribeImage deve retornar 200 e o resultado', async () => {
         const req = mockRequest({ imageBase64: 'data:image/jpeg;base64,fakeImage' })
         const res = mockResponse();
         ttsServices.DescribeImageService.mockResolvedValue('Imagem de um gato sorrindo');
@@ -162,7 +171,7 @@ describe('Testes do TTS', () => {
     }); //Falha 2
 
     // Braille
-    test('Braille deve retornar 200 com resultado', async () => {
+    test('Braille deve retornar 200 e o resultado', async () => {
         const req = mockRequest({ text: 'abc' }, { id: 42 });
         const res = mockResponse();
         ttsServices.BrailleService.mockResolvedValue('⠁⠃⠉');
@@ -180,7 +189,7 @@ describe('Testes do TTS', () => {
     }); //Falha 1
 
     // BrailleToText
-    test('BrailleToText deve retornar resultado convertido', async () => {
+    test('BrailleToText deve retornar 200 e o resultado convertido', async () => {
         const req = mockRequest({ braille: '⠁' }, { id: 42 });
         const res = mockResponse();
         ttsServices.BrailleToTextService.mockResolvedValue('a');
@@ -198,7 +207,7 @@ describe('Testes do TTS', () => {
     }); //Falha
 
     // BrailleForDisplay
-    test('BrailleForDisplay deve retornar resultado', async () => {
+    test('BrailleForDisplay deve retornar 200 e o resultado', async () => {
         const req = mockRequest({ text: 'abc' }, { id: 42 });
         const res = mockResponse();
         ttsServices.BrailleForDisplayService.mockResolvedValue('braille-binary');

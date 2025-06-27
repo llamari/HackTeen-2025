@@ -60,27 +60,31 @@ export const Summarise = async (req, res) => {
 };
 
 export const DescribeImage = async (req, res) => {
-    try {
-        const { imageBase64 } = req.body;
+  try {
+    const { imageBase64 } = req.body;
 
-        if (!imageBase64) {
-            return res.status(400).json({ error: 'A imagem é obrigatória.' });
-        }
-
-        const description = await DescribeImageService(imageBase64);
-        return res.json({ description });
-
-    } catch (error) {
-        console.error("Erro no controller:", error.message);
-        return res.status(500).json({ error: "Erro ao processar imagem." });
+    if (!imageBase64) {
+      return res.status(400).json({ error: 'A imagem é obrigatória.' });
     }
+
+    const description = await DescribeImageService(imageBase64);
+    return res.json({ description });
+
+  } catch (error) {
+    console.error("Erro no controller:", error.message);
+    return res.status(500).json({ error: "Erro ao processar imagem." });
+  }
 };
 
 export const YourTexts = async (req, res) => {
-  const userId = req.user.id;
-  const texts = await YourTextsService(userId);
-
-  res.json({ texts: texts });
+  try {
+    const userId = req.user.id;
+    const texts = await YourTextsService(userId);
+    res.json({ texts: texts });
+  } catch (error) {
+    console.error('Erro', error);
+    return res.status(500).json({ error: 'Erro inesperado.' });
+  }
 }
 
 export const Braille = async (req, res) => {
