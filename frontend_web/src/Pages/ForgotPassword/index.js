@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import './index.css';
+import { MdOutlineEmail } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 // import Header from "../Componentes/Header";
 // import { AlignCenter } from "lucide-react";
 
 function Password() {
     const [user, setuser] = useState();
+    const navigate = useNavigate();
 
     async function Send(e) {
         e.preventDefault();
@@ -15,7 +18,7 @@ function Password() {
             console.log("E-mail do usuário: ", email)
             document.getElementById("user-email").value = '';
 
-            const response = await axios.put(`http://localhost:5000/forgot/password`, {
+            const response = await axios.put(`https://inclusound-back.onrender.com/users/forgot/password`, {
                 email: email
             });
 
@@ -70,42 +73,55 @@ function Password() {
     return (
         <div>
             <section className="section">
+                <h2 className="title-pass">Redefinição de senha</h2>
                 <form onSubmit={(e) => Send(e)} id="mail" className="form-forgot">
-                    <h2>Esqueci a senha</h2>
-                    <p>Digite seu e-mail no campo abaixo e lhe enviaremos um código de ativação para redefinição da senha</p>
-                    <label htmlFor="user-email">Insira seu e-mail</label>
-                    <input type="email" id="user-email" className="log"/>
-                    <button 
-                    type="button" 
-                    onClick={Send} 
-                    className="send" 
-                    >Enviar</button>
+                    <p>Insira o campo abaixo para enviarmos um código de alteração de senha</p>
+                    <div className="inputLogin">
+                        <MdOutlineEmail color="#282828" />
+                        <input type="email" id="user-email" placeholder="E-mail" />
+                    </div>
+                    <div className="flex">
+                        <button
+                            type="button"
+                            onClick={() => navigate(-1)}
+                            className="send"
+                        >
+                            Voltar
+                        </button>
+                        <button
+                            type="button"
+                            onClick={Send}
+                            className="send"
+                        >
+                            Enviar
+                        </button>
+                    </div>
                 </form>
             </section>
             <section className="section" id="form2">
-                <form id="code" style={{display: 'none', flexDirection: 'column'}} className="form-forgot">
+                <form id="code" style={{ display: 'none', flexDirection: 'column' }} className="form-forgot">
                     <h3>Insira no campo abaixo o código enviado no seu e-mail:</h3>
                     <p>Se não encontrar o e-mail na sua caixa de entrada, verifique a pasta de spam ou lixo eletrônico.</p>
-                    <div style={{"display": "inline-flex"}}>
+                    <div style={{ "display": "inline-flex" }}>
                         <br></br>
-                        <input type="number" id="code" className="log"/>
+                        <input type="number" id="code" className="log" />
                     </div>
                     <button type="submit" onClick={(e) => Verify(e)} className="send">Verificar</button>
                 </form>
             </section>
             <section className="section" id="form3">
-                <form id="newPassword" style={{display: 'none', flexDirection: 'column'}} className="form-forgot">
+                <form id="newPassword" style={{ display: 'none', flexDirection: 'column' }} className="form-forgot">
                     <h2>Redefina sua senha:</h2>
                     <label>Insira sua senha: </label>
-                    <input type="password" id="password1" className="log"/>
+                    <input type="password" id="password1" className="log" />
                     <label>Repita sua senha: </label>
-                    <input type="password" id="password2" className="log"/>
-                    <p id="wrongPassword" style={{display: 'none'}}> As senhas devem ser iguais</p>
+                    <input type="password" id="password2" className="log" />
+                    <p id="wrongPassword" style={{ display: 'none' }}> As senhas devem ser iguais</p>
                     <button onClick={(e) => Change(e)} className="send">Enviar</button>
                 </form>
             </section>
             <section className="section" id="RecoverPassword">
-                <div className="form-forgot" style={{alignItems: 'center', alignContent: 'center'}}>
+                <div className="form-forgot" style={{ alignItems: 'center', alignContent: 'center' }}>
                     <h2>Nova senha definida com sucesso!</h2>
                     <button onClick={(e) => window.location.href = '/'} className="send">Ir para o login</button>
                 </div>

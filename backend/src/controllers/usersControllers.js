@@ -71,7 +71,7 @@ export const ForgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
 
-        code = await ForgotPasswordService(email);
+        const code = await ForgotPasswordService(email);
 
         res.status(200).json({ message: "E-mail enviado", code: code});
     } catch (error) {

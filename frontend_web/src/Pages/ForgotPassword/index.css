@@ -1,33 +1,49 @@
-.form-forgot{
+.section {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1AA1A7;
+    align-items: center;
+    justify-content: center;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.title-pass{
+    text-align: center;
+    font-size: xx-large;
+    color: #fff;
+}
+
+.form-forgot {
+    background-color: #fff;
     width: 30%;
     min-height: 30%;
     flex-direction: column;
     justify-content: center;
-    background-color: #B09A8B;
     padding: 0 5% 5% 5%;
     border-radius: 2rem;
-    color: #000;
+    color: #137F83;
+    font-size: larger;
     text-align: center;
-}
-
-.form-forgot input {
-    height: 1.5rem;
-    margin: .2rem 0;
-    background-color: #fff;
-    border: none;
-    border-radius: 5px;
-    width: 100%;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
 }
 
 .send {
     width: 100%;
     height: 2.5rem;
     border-radius: 1rem;
-    background-color: #877264;
+    background-color: #137F83;
     border: none;
     font-weight: 600;
-    color: #000;
+    color: #fff;
     font-size: large;
     cursor: pointer;
-    margin: 2% 0 0 0;
+    margin: 2% 2% 0 2%;
 }
