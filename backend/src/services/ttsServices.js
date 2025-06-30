@@ -41,7 +41,7 @@ export const SummariseService = async (text) => {
             contents: [
                 {
                     parts: [
-                        { text: `Resuma o seguinte texto: \n${text}` }
+                        { text: `Resuma o seguinte texto, no idioma que estiver: \n${text}` }
                     ],
                 },
             ],
@@ -101,6 +101,7 @@ export const YourTextsService = async (userId) => {
 }
 
 export const BrailleService = async (text, userId) => {
+    console.log(text)
     var result = ''
     var isNumber = false;
     const brailleMap = {

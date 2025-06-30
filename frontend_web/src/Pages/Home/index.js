@@ -1,15 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
+import WaveSurferPlayer from "@wavesurfer/react";
 import axios from "axios";
 import './index.css'
+import { LuLogOut } from "react-icons/lu";
+import { FaBars, FaPlay, FaPaperclip } from "react-icons/fa6";
+import { BsPauseFill } from "react-icons/bs";
+import { HiMiniArrowsRightLeft } from "react-icons/hi2";
 
 function Home() {
     const token = localStorage.getItem('token');
     const [audioUrl, setAudioUrl] = useState(null);
     const [text, setText] = useState("");
     const [language, setLanguage] = useState("pt-br");
+    const [fileName, setFileName] = useState("Selecionar imagem");
+    const [imageToConvert, setImageToConvert] = useState('');
+    const [textToBraille, setTextToBraille] = useState('');
+    const [brailleToText, setBrailleToText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const audioRef = useRef(null);
+    const waveformRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
 
     useEffect(() => {
         return () => {
@@ -30,9 +41,11 @@ function Home() {
         setIsLoading(true);
         setError(null);
 
+        console.log('Entrou em TextToSpeach')
+
         try {
             const response = await axios.post(
-                'http://localhost:5000/texttosound',
+                'https://inclusound-back.onrender.com/tts',
                 { text: texto, language },
                 {
                     headers: {
@@ -48,7 +61,7 @@ function Home() {
             setAudioUrl(url);
 
         } catch (err) {
-            console.error("Erro:", err); 
+            console.error("Erro:", err);
             setError(err.response?.data?.error || 'Erro ao gerar áudio');
         } finally {
             setIsLoading(false);
@@ -62,7 +75,7 @@ function Home() {
         console.log(text)
         try {
             const response = await axios.post(
-                'http://localhost:5000/summarize',
+                'https://inclusound-back.onrender.com/tts/summarize',
                 { text: text },
                 {
                     headers: {
@@ -75,18 +88,116 @@ function Home() {
             const summary = response.data.summary;
             TextToSpeach(e, summary)
         } catch (err) {
-            console.error("Erro:", err); 
+            console.error("Erro:", err);
             setError(err.response?.data?.error || 'Erro ao gerar áudio');
         } finally {
             setIsLoading(false);
         }
     }
 
+    function handleImageChange(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            const fullBase64 = reader.result; // Ex: data:image/png;base64,abc123...
+            const cleanBase64 = fullBase64.split(',')[1]; // Remove o "data:image/...;base64,"
+
+            // Enviar para backend
+            enviarImagemParaBackend(cleanBase64);
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+            setFileName(file.name)
+        }
+    }
+
+    async function enviarImagemParaBackend(base64Data) {
+        try {
+            const response = await axios.post(
+                'https://inclusound-back.onrender.com/tts/describeImage',
+                { imageBase64: base64Data },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+            console.log(response)
+            const description = response.data.description;
+            setImageToConvert(description);
+            const idioma = 'pt-br'
+            setLanguage(idioma)
+        } catch (err) {
+            console.error(err);
+            setError('Erro ao descrever a imagem');
+        }
+    }
+
+    async function convertToBraille() {
+        try {
+            const response = await axios.post('https://inclusound-back.onrender.com/tts/textToBraille',
+                { text: textToBraille },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+            setBrailleToText(response.data.result)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    function openTab(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    useEffect(() => {
+        const defaultTab = document.getElementById("defaultOpen");
+        if (defaultTab) {
+            defaultTab.click(); // agora só executa se existir
+        }
+    }, []);
+
     return (
         <div id="main">
-            <div id="content">
-                <form id="form-tts">
-                    <label>Escolha o idioma do seu texto: </label>
+            <header id="home-header">
+                <FaBars />
+                <LuLogOut />
+            </header>
+            <img src="./assets/logo-inclusound.png" id="logo-image" />
+            <h1 id="home-caption">A informação pertence a todos</h1>
+            <div className="tab">
+                <button className="tablinks" onClick={(event) => openTab(event, 'TTS')} id="defaultOpen">Texto para som</button>
+                <button className="tablinks" onClick={(event) => openTab(event, 'ITT')}>Imagem para som</button>
+                <button className="tablinks" onClick={(event) => openTab(event, 'Braille')}>Conversões em braille</button>
+            </div>
+            <div id="TTS" className="tabcontent">
+                <form className="form-tts">
+                    <label>Texto a ser convertido: </label>
+                    <textarea
+                        id="text"
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="Insira o texto que deseja ouvir!"
+                    />
+
+                    <label>Idioma: </label>
                     <select //absolutamente TODOS os idiomas que a biblioteca aceita segundo as minhas pesquisas
                         id="language"
                         value={language}
@@ -144,39 +255,107 @@ function Home() {
                         <option value="vi">Vietnamita (vi)</option>
                         <option value="cy">Galês (cy)</option>
                     </select>
-                    <label>Texto: </label>
-                    <textarea
-                        id="text"
-                        value={text}
-                        onChange={(e) => setText(e.target.value)}
-                    />
 
-                    <div>
-                        <button onClick={(e) => TextToSpeach(e, text)} disabled={isLoading || !text}>
+                    <div className="flex">
+                        <button onClick={(e) => TextToSpeach(e, text)} disabled={isLoading || !text} className="home-button">
                             {isLoading ? 'Processando...' : 'Ouvir áudio'}
                         </button>
-
-                        <button onClick={(e) => Summary(e)}>
+                        <button onClick={(e) => Summary(e)} className="home-button">
                             {isLoading ? 'Processando...' : 'Ouvir áudio do resumo'}
                         </button>
                     </div>
                 </form>
 
                 {error && <div style={{ color: 'red' }}>{error}</div>}
+                {audioUrl && (
+                    <div style={{ width: "100%", maxHeight: "40px", display: "flex" }} id="audio-player">
+                        <div>
+                            <button
+                                id="play-button"
+                                onClick={() => {
+                                    if (waveformRef.current) {
+                                        waveformRef.current.playPause();
+                                        setIsPlaying(waveformRef.current.isPlaying());
+                                    }
+                                }}>
+                                {isPlaying ? <BsPauseFill /> : <FaPlay />}
+                            </button>
+                        </div>
+                        <WaveSurferPlayer
+                            height={40}
+                            width={200}
+                            waveColor="#fff"
+                            progressColor="#8bc5c7"
+                            url={audioUrl}
+                            normalize={true}
+                            responsive={true}
+                            onReady={(ws) => {
+                                waveformRef.current = ws;
+                            }}
+                            onFinish={() => setIsPlaying(false)}
+                        />
+                    </div>
+                )}
             </div>
-            {audioUrl && (
-                <div>
-                    <audio
-                        ref={audioRef}
-                        controls
-                        autoPlay
-                        key={audioUrl}  // This forces React to recreate the element
-                    >
-                        <source src={audioUrl} type="audio/mp3" />
-                        Seu navegador não suporta a tag de áudio.
-                    </audio>
+
+            <div id="ITT" className="tabcontent">
+                <form className="form-tts">
+                    <label>Imagem a ser convertida:</label>
+                    <label htmlFor="file-upload" className="custom-file-upload">
+                        {fileName}
+                        <FaPaperclip />
+                    </label>
+                    <input id="file-upload" type="file" onChange={handleImageChange} />
+
+                    <button onClick={(e) => TextToSpeach(e, imageToConvert)} disabled={isLoading || !fileName} className="home-button" style={{ margin: 0 }}>
+                        Ouvir áudio
+                    </button>
+                </form>
+                {audioUrl && (
+                    <div style={{ width: "100%", maxHeight: "40px", display: "flex" }} id="audio-player">
+                        <div>
+                            <button
+                                id="play-button"
+                                onClick={() => {
+                                    if (waveformRef.current) {
+                                        waveformRef.current.playPause();
+                                        setIsPlaying(waveformRef.current.isPlaying());
+                                    }
+                                }}>
+                                {isPlaying ? <BsPauseFill /> : <FaPlay />}
+                            </button>
+                        </div>
+                        <WaveSurferPlayer
+                            height={40}
+                            width={200}
+                            waveColor="#fff"
+                            progressColor="#8bc5c7"
+                            url={audioUrl}
+                            normalize={true}
+                            responsive={true}
+                            onReady={(ws) => {
+                                waveformRef.current = ws;
+                            }}
+                            onFinish={() => setIsPlaying(false)}
+                        />
+                    </div>
+                )}
+            </div>
+
+            <div id="Braille" className="tabcontent">
+                <div style={{ display: 'flex', justifyContent: 'space-evenly', fontSize: 'x-large', color: 'black', height: '7vh' }}>
+                    Texto
+                    <HiMiniArrowsRightLeft />
+                    Braille
                 </div>
-            )}
+                <div style={{ width: '100%', height: '100%', backgroundColor: 'aqua' }}>
+                    <textarea style={{ minWidth: '50%', maxWidth: '50%', minHeight: '53vh', maxHeight: '53vh' }} value={textToBraille} onChange={(e) => {
+                        setTextToBraille(e.target.value);
+                        convertToBraille()
+                    }} />
+                    {brailleToText}
+                </div>
+            </div>
         </div>
     );
 }
