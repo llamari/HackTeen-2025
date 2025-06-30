@@ -47,3 +47,8 @@
     cursor: pointer;
     margin: 2% 2% 0 2%;
 }
+
+#newPassword{
+    flex-direction: column;
+    padding-top: 2rem;
+}
