@@ -175,10 +175,6 @@ export const BrailleService = async (text, userId) => {
 
     console.log(result);
 
-    await Text.create({
-        content: text,
-        user_id: userId
-    })
     return result;
 }
 
@@ -256,10 +252,6 @@ export const BrailleToTextService = async (braille, userId) => {
     })
 
     console.log(result);
-    await Text.create({
-        content: result,
-        user_id: userId
-    })
     return result;
 }
 

@@ -5,6 +5,7 @@ import Password from './Pages/ForgotPassword';
 import Home from './Pages/Home';
 import UserRegistration from './Pages/SignUp';
 import { History } from './Pages/History';
+import { Objectives } from './Pages/Objectives';
 
 function Route1() { 
     return(
@@ -15,6 +16,7 @@ function Route1() {
                 <Route path='/forgot/password' element={<Password/>}/>
                 <Route path='/home' element={<Home/>}/>
                 <Route path='/history' element={<History/>}/>
+                <Route path='/objectives' element={<Objectives/>}/>
             </Routes>
         </BrowserRouter>
     )

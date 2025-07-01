@@ -146,4 +146,5 @@
 #wrong-login {
     display: none;
     color: red;
+    font-weight: 600;
 }

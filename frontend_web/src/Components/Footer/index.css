@@ -1,0 +1,34 @@
+#footer{
+    background-color: #177173;
+    margin: 0;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999999;
+}
+
+#footer-text{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #1e1e1e;
+}
+
+#footer-icons{
+    float: right;
+    color: #fff;
+    position: absolute;
+    right: 1rem;
+    display: flex;
+}
+
+.social-icon{
+    border: #ffffff2f 2px solid;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    margin: 5px;
+}

@@ -8,22 +8,32 @@ import { CiLock } from "react-icons/ci";
 function Login() {
     const navigate = useNavigate();
     async function SignIn(event) {
-        event.preventDefault(); // Impede o recarregamento da página
-        console.log("Está logando")
+        event.preventDefault();
+        console.log("Está logando");
         const mail = document.getElementById("e-mail").value;
         const password = document.getElementById("password").value;
 
-        const response = await axios.put('https://inclusound-back.onrender.com/users/signin', {
-            email: mail, password: password
-        })
+        try {
+            const response = await axios.put('https://inclusound-back.onrender.com/users/signin', {
+                email: mail,
+                password: password
+            });
 
-        console.log(response.data);
+            console.log(response.data);
 
-        if (response.data.success == true) {
-            localStorage.setItem('token', response.data.token);
-            window.location.href = '/home';
-        } else {
-            document.getElementById('wrong-login').style.display = 'flex'
+            if (response.data.success === true) {
+                localStorage.setItem('token', response.data.token);
+                window.location.href = '/home';
+            } else {
+                document.getElementById('wrong-login').style.display = 'flex';
+            }
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.message) {
+                console.error("Erro do backend:", error.response.data.message);
+            } else {
+                console.error("Erro inesperado:", error.message);
+            }
+            document.getElementById('wrong-login').style.display = 'flex';
         }
     }
 
@@ -52,7 +62,7 @@ function Login() {
                 <div id="sign-up">
                     <h1 id="title-link-signup">Novo por aqui?</h1>
                     <h2 id="caption-link-signup">Inscreva-se e escolha como interagir com a informação</h2>
-                    <button type="submit" className="goToSignup" onClick={()=> navigate('/signup')}>Cadastrar</button>
+                    <button type="submit" className="goToSignup" onClick={() => navigate('/signup')}>Cadastrar</button>
                 </div>
             </section>
         </div>
