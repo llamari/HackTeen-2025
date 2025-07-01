@@ -13,7 +13,7 @@ import Text from './src/models/ttsModels.js';
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(SwaggerImport));
 
-const allowedOrigins = ['http://localhost:3000', 'http://localhost:8081'];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:8081', 'https://hack-teen-2025.vercel.app/'];
 
 app.use(cors({
   origin: function (origin, callback) {
