@@ -12,8 +12,7 @@ function Route1() {
     return(
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<WhoAreUs/>}/>
-                <Route path='/login' element={<Login/>}/>
+                <Route path='/' element={<Login/>}/>
                 <Route path='/signup' element={<UserRegistration/>}/>
                 <Route path='/forgot/password' element={<Password/>}/>
                 <Route path='/home' element={<Home/>}/>
