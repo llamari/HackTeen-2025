@@ -21,7 +21,7 @@ function UserRegistration() {
 
             if (response.data.success == true) {
                 localStorage.setItem('token', response.data.token);
-                window.location.href = '/home';
+                window.location.href = '/';
             } else {
                 document.getElementById("error-message").style.display = 'flex'
             }

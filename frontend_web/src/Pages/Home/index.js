@@ -6,6 +6,7 @@ import { LuLogOut } from "react-icons/lu";
 import { FaBars, FaPlay, FaPaperclip } from "react-icons/fa6";
 import { BsPauseFill } from "react-icons/bs";
 import { HiMiniArrowsRightLeft } from "react-icons/hi2";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const token = localStorage.getItem('token');
@@ -19,10 +20,16 @@ function Home() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     const audioRef = useRef(null);
-    const waveformRef = useRef(null);
+    const waveformRefTTS = useRef(null);
+    const waveformRefITT = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [toBraille, setToBraille] = useState(true)
+    const navigate = useNavigate()
 
     useEffect(() => {
+        if (!token) {
+            navigate('/')
+        }
         return () => {
             if (audioUrl) {
                 URL.revokeObjectURL(audioUrl);
@@ -136,10 +143,10 @@ function Home() {
         }
     }
 
-    async function convertToBraille() {
+    async function convertToBraille(textToConvert) {
         try {
             const response = await axios.post('https://inclusound-back.onrender.com/tts/textToBraille',
-                { text: textToBraille },
+                { text: textToConvert },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -153,6 +160,31 @@ function Home() {
         }
     }
 
+    async function convertToText(brailleToConvert) {
+        try {
+            const response = await axios.post('https://inclusound-back.onrender.com/tts/brailleToText',
+                { braille: brailleToConvert },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+            setTextToBraille(response.data.result)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    function LogOut() {
+        // eslint-disable-next-line no-restricted-globals
+        if (confirm('Você tem certeza de que deseja deslogar da plataforma?') == true) {
+            localStorage.removeItem('token')
+            navigate('/')
+        }
+    }
+
     function openTab(evt, cityName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("tabcontent");
@@ -163,6 +195,7 @@ function Home() {
         for (i = 0; i < tablinks.length; i++) {
             tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
+        setAudioUrl('')
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " active";
     }
@@ -178,7 +211,7 @@ function Home() {
         <div id="main">
             <header id="home-header">
                 <FaBars />
-                <LuLogOut />
+                <LuLogOut onClick={() => LogOut()} style={{ cursor: 'pointer' }} />
             </header>
             <img src="./assets/logo-inclusound.png" id="logo-image" />
             <h1 id="home-caption">A informação pertence a todos</h1>
@@ -273,9 +306,9 @@ function Home() {
                             <button
                                 id="play-button"
                                 onClick={() => {
-                                    if (waveformRef.current) {
-                                        waveformRef.current.playPause();
-                                        setIsPlaying(waveformRef.current.isPlaying());
+                                    if (waveformRefTTS.current) {
+                                        waveformRefTTS.current.playPause();
+                                        setIsPlaying(waveformRefTTS.current.isPlaying());
                                     }
                                 }}>
                                 {isPlaying ? <BsPauseFill /> : <FaPlay />}
@@ -290,7 +323,7 @@ function Home() {
                             normalize={true}
                             responsive={true}
                             onReady={(ws) => {
-                                waveformRef.current = ws;
+                                waveformRefTTS.current = ws;
                             }}
                             onFinish={() => setIsPlaying(false)}
                         />
@@ -317,9 +350,9 @@ function Home() {
                             <button
                                 id="play-button"
                                 onClick={() => {
-                                    if (waveformRef.current) {
-                                        waveformRef.current.playPause();
-                                        setIsPlaying(waveformRef.current.isPlaying());
+                                    if (waveformRefITT.current) {
+                                        waveformRefITT.current.playPause();
+                                        setIsPlaying(waveformRefITT.current.isPlaying());
                                     }
                                 }}>
                                 {isPlaying ? <BsPauseFill /> : <FaPlay />}
@@ -334,7 +367,7 @@ function Home() {
                             normalize={true}
                             responsive={true}
                             onReady={(ws) => {
-                                waveformRef.current = ws;
+                                waveformRefITT.current = ws;
                             }}
                             onFinish={() => setIsPlaying(false)}
                         />
@@ -343,18 +376,41 @@ function Home() {
             </div>
 
             <div id="Braille" className="tabcontent">
-                <div style={{ display: 'flex', justifyContent: 'space-evenly', fontSize: 'x-large', color: 'black', height: '7vh' }}>
-                    Texto
-                    <HiMiniArrowsRightLeft />
-                    Braille
-                </div>
-                <div style={{ width: '100%', height: '100%', backgroundColor: 'aqua' }}>
-                    <textarea style={{ minWidth: '50%', maxWidth: '50%', minHeight: '53vh', maxHeight: '53vh' }} value={textToBraille} onChange={(e) => {
-                        setTextToBraille(e.target.value);
-                        convertToBraille()
-                    }} />
-                    {brailleToText}
-                </div>
+                {toBraille ?
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-evenly', fontSize: 'x-large', color: 'black', height: '7vh' }}>
+                            Texto
+                            <HiMiniArrowsRightLeft onClick={() => setToBraille(false)} style={{ cursor: 'pointer' }} />
+                            Braille
+                        </div>
+                        <div style={{ width: '100%', height: '100%', display: 'flex' }}>
+                            <textarea style={{ minWidth: '50%', maxWidth: '50%', minHeight: '53vh', maxHeight: '53vh', color: '#1E1E1E' }} value={textToBraille} onChange={(e) => {
+                                setTextToBraille(e.target.value);
+                                convertToBraille(e.target.value)
+                            }} />
+                            <div style={{ display: 'flex', alignItems: 'start', width: '50%', backgroundColor: '#E2E2E2', color: '#1E1E1E' }}>
+                                {brailleToText}
+                            </div>
+                        </div>
+                    </div>
+                    :
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-evenly', fontSize: 'x-large', color: 'black', height: '7vh' }}>
+                            Braille
+                            <HiMiniArrowsRightLeft onClick={() => setToBraille(true)} style={{ cursor: 'pointer' }} />
+                            Texto
+                        </div>
+                        <div style={{ width: '100%', height: '100%', display: 'flex' }}>
+                            <textarea style={{ minWidth: '50%', maxWidth: '50%', minHeight: '53vh', maxHeight: '53vh', color: '#1E1E1E' }} value={brailleToText} onChange={(e) => {
+                                setBrailleToText(e.target.value);
+                                convertToText(e.target.value)
+                            }} />
+                            <div style={{ display: 'flex', alignItems: 'start', width: '50%', backgroundColor: '#E2E2E2', color: '#1E1E1E' }}>
+                                {textToBraille}
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     );
