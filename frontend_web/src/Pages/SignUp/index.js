@@ -12,22 +12,32 @@ function UserRegistration() {
         if ((document.getElementById("password").value) == (document.getElementById("password2").value)) {
             const mail = document.getElementById("e-mail").value;
             const password = document.getElementById("password").value;
+            try {
 
-            const response = await axios.post('https://inclusound-back.onrender.com/users/signup', {
-                email: mail, password: password
-            })
+                const response = await axios.post('https://inclusound-back.onrender.com/users/signup', {
+                    email: mail, password: password
+                })
 
-            console.log(response.data);
+                console.log(response.data);
 
-            if (response.data.success == true) {
-                localStorage.setItem('token', response.data.token);
-                window.location.href = '/';
-            } else {
+                if (response.data.success == true) {
+                    localStorage.setItem('token', response.data.token);
+                    window.location.href = '/login';
+                } else {
+                    document.getElementById("error-message").style.display = 'flex'
+                }
+            } catch (error) {
+                if (error.response && error.response.data && error.response.data.message) {
+                    console.error("Erro do backend:", error.response.data.message);
+                } else {
+                    console.error("Erro inesperado:", error.message);
+                }
                 document.getElementById("error-message").style.display = 'flex'
             }
         } else {
             document.getElementById('diferent-passwords').style.display = 'flex'
         }
+
     }
 
     return (
@@ -36,7 +46,7 @@ function UserRegistration() {
                 <div id="sign-up">
                     <h1 id="title-link-signup">Bem-vindo(a) de volta!</h1>
                     <h2 id="caption-link-signup">Por um mundo com acesso ao conhecimento sem barreiras</h2>
-                    <button type="submit" className="goToSignup" onClick={() => navigate('/')}>Entrar</button>
+                    <button type="submit" className="goToSignup" onClick={() => navigate('/login')}>Entrar</button>
                 </div>
                 <div id="login">
                     <h1 id="title-login">Cadastrar</h1>
