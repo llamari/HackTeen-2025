@@ -22,7 +22,7 @@ function UserRegistration() {
 
                 if (response.data.success == true) {
                     localStorage.setItem('token', response.data.token);
-                    window.location.href = '/login';
+                    window.location.href = '/';
                 } else {
                     document.getElementById("error-message").style.display = 'flex'
                 }
@@ -46,7 +46,7 @@ function UserRegistration() {
                 <div id="sign-up">
                     <h1 id="title-link-signup">Bem-vindo(a) de volta!</h1>
                     <h2 id="caption-link-signup">Por um mundo com acesso ao conhecimento sem barreiras</h2>
-                    <button type="submit" className="goToSignup" onClick={() => navigate('/login')}>Entrar</button>
+                    <button type="submit" className="goToSignup" onClick={() => navigate('/')}>Entrar</button>
                 </div>
                 <div id="login">
                     <h1 id="title-login">Cadastrar</h1>

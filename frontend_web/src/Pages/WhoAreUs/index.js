@@ -7,7 +7,7 @@ export function WhoAreUs() {
     return (
         <div id="main">
             <header id="home-header" style={{justifyContent: 'end'}}>
-                <LuLogIn  onClick={() => navigate('/login')} style={{ cursor: 'pointer', float: 'right' }} />
+                <LuLogIn  onClick={() => navigate('/')} style={{ cursor: 'pointer', float: 'right' }} />
             </header>
 
             <img src="./assets/logo-inclusound.png" id="logo-image" />

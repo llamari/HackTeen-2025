@@ -57,6 +57,11 @@ export function Objectives() {
             <h1 id="home-caption">A informação pertence a todos</h1>
 
             <div className="objective-div">
+                <h1 className="objective-title">Quem somos</h1>
+                <p>
+                    O IncluSound é uma startup que promove o acesso à informação para todas as pessoas, independentemente de sua forma de comunicação. Ela assegura que esse acesso ocorra de maneira livre e inclusiva, utilizando diferentes tecnologias que, combinadas, realizam um trabalho admirável.
+                </p>
+
                 <h1 className="objective-title">Nossa proposta</h1>
                 <p>
                     Segundo dados do censo demográfico do Instituto Brasileiro de Geografia e Estatística (IBGE) de 2010, 18,6% da população brasileira possui algum tipo de deficiência visual. Desse total, 6,5 milhões apresentam deficiência visual severa, sendo que 506 mil têm perda total da visão (0,3% da população) e 6 milhões, grande dificuldade para enxergar (3,2%).<br />
