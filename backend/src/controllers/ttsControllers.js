@@ -43,12 +43,13 @@ export const TextToSound = async (req, res) => {
 
 export const Summarise = async (req, res) => {
   try {
+      const userId = req.user.id;
     const { text } = req.body;
     if (!text || typeof text !== 'string') {
       return res.status(400).json({ error: 'Informação essencial faltando' });
     }
 
-    const summary = await SummariseService(text);
+    const summary = await SummariseService(userId, text);
 
     return res.status(200).json({ summary });
   } catch (error) {
@@ -61,13 +62,15 @@ export const Summarise = async (req, res) => {
 
 export const DescribeImage = async (req, res) => {
   try {
+      const userId = req.user.id;
+
     const { imageBase64 } = req.body;
 
     if (!imageBase64) {
       return res.status(400).json({ error: 'A imagem é obrigatória.' });
     }
 
-    const description = await DescribeImageService(imageBase64);
+    const description = await DescribeImageService(userId, imageBase64);
     return res.json({ description });
 
   } catch (error) {

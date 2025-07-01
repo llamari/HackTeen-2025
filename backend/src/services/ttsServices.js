@@ -35,7 +35,7 @@ export const TextToSoundService = async (userId, text, language) => {
     });
 };
 
-export const SummariseService = async (text) => {
+export const SummariseService = async (userId, text) => {
     try {
         const requestBody = {
             contents: [
@@ -70,7 +70,7 @@ export const SummariseService = async (text) => {
     }
 };
 
-export const DescribeImageService = async (imageBase64) => {
+export const DescribeImageService = async (userId, imageBase64) => {
     try {
         const requestBody = {
             contents: [
