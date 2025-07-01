@@ -53,6 +53,7 @@ function Home() {
             audioRef.current.load();
         }
     }, [audioUrl]);
+
     useEffect(() => {
         function handleClickOutside(event) {
             if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -66,12 +67,12 @@ function Home() {
         };
     }, []);
 
-    async function TextToSpeach(e, texto) {
+    async function TextToSpeech(e, texto) {
         e.preventDefault();
         setIsLoading(true);
         setError(null);
 
-        console.log('Entrou em TextToSpeach')
+        console.log('Entrou em TextToSpeech')
 
         try {
             const response = await axios.post(
@@ -116,7 +117,7 @@ function Home() {
             );
 
             const summary = response.data.summary;
-            TextToSpeach(e, summary)
+            TextToSpeech(e, summary)
         } catch (err) {
             console.error("Erro:", err);
             setError(err.response?.data?.error || 'Erro ao gerar áudio');
@@ -315,7 +316,7 @@ function Home() {
                     </select>
 
                     <div className="flex">
-                        <button onClick={(e) => TextToSpeach(e, text)} disabled={isLoading || !text} className="home-button">
+                        <button onClick={(e) => TextToSpeech(e, text)} disabled={isLoading || !text} className="home-button">
                             {isLoading ? 'Processando...' : 'Ouvir áudio'}
                         </button>
                         <button onClick={(e) => Summary(e)} className="home-button">
@@ -365,7 +366,7 @@ function Home() {
                     </label>
                     <input id="file-upload" type="file" onChange={handleImageChange} />
 
-                    <button onClick={(e) => TextToSpeach(e, imageToConvert)} disabled={isLoading || !fileName} className="home-button" style={{ margin: 0 }}>
+                    <button onClick={(e) => TextToSpeech(e, imageToConvert)} disabled={isLoading || !fileName} className="home-button" style={{ margin: 0 }}>
                         Ouvir áudio
                     </button>
                 </form>

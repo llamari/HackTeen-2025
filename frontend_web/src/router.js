@@ -6,12 +6,14 @@ import Home from './Pages/Home';
 import UserRegistration from './Pages/SignUp';
 import { History } from './Pages/History';
 import { Objectives } from './Pages/Objectives';
+import { WhoAreUs } from './Pages/WhoAreUs';
 
 function Route1() { 
     return(
         <BrowserRouter>
             <Routes>
-                <Route path='/' element={<Login/>}/>
+                <Route path='/' element={<WhoAreUs/>}/>
+                <Route path='/login' element={<Login/>}/>
                 <Route path='/signup' element={<UserRegistration/>}/>
                 <Route path='/forgot/password' element={<Password/>}/>
                 <Route path='/home' element={<Home/>}/>
