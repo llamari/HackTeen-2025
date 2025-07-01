@@ -1,7 +1,8 @@
 # 🚀 **IncluSound – HackTeen-2025**
 
 
-## Índice
+
+### Índice
 - [Sobre](#-sobre-o-projeto)
 - [Vídeo de Apresentação](#-vídeo-de-apresentação)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
@@ -12,6 +13,7 @@
 - [Roadmap e Melhorias Futuras](#-roadmap-e-melhorias-futuras)
 - [Tecnologias utilizadas](#-tecnologias-utilizadas)
 - [Autores do Projeto](#-autores-do-projeto)
+
 
 
 
