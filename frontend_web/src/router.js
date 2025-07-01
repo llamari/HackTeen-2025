@@ -1,7 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes} from 'react-router-dom'
 import Login from './Pages/Login';
-import Password from './Pages/ForgotPassword'; // corrigir
+import Password from './Pages/ForgotPassword';
 import Home from './Pages/Home';
 import UserRegistration from './Pages/SignUp';
 
@@ -18,4 +18,4 @@ function Route1() {
     )
 }
 
-export default Route1; // corrigir
+export default Route1; 
