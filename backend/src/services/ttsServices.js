@@ -54,6 +54,15 @@ export const SummariseService = async (text) => {
 
         const result = response.data.candidates[0]?.content?.parts[0]?.text || '';
 
+        try {
+            await Text.create({
+                content: result,
+                user_id: userId
+            });
+        } catch (error) {
+            throw { type: 'db', message: 'Erro ao salvar texto no banco.' };
+        }
+
         return result;
     } catch (error) {
         console.error('Erro ao chamar a API:', error.response ? error.response.data : error.message);
@@ -87,6 +96,16 @@ export const DescribeImageService = async (imageBase64) => {
         const response = await axios.post(API_URL, requestBody);
 
         const result = response.data.candidates[0]?.content?.parts[0]?.text || 'Não foi possível gerar uma descrição.';
+        
+        try {
+            await Text.create({
+                content: result,
+                user_id: userId
+            });
+        } catch (error) {
+            throw { type: 'db', message: 'Erro ao salvar texto no banco.' };
+        }
+        
         return result;
 
     } catch (error) {

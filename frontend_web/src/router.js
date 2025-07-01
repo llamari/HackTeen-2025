@@ -4,6 +4,7 @@ import Login from './Pages/Login';
 import Password from './Pages/ForgotPassword'; // corrigir
 import Home from './Pages/Home';
 import UserRegistration from './Pages/SignUp';
+import { History } from './Pages/History';
 
 function Route1() { 
     return(
@@ -13,6 +14,7 @@ function Route1() {
                 <Route path='/signup' element={<UserRegistration/>}/>
                 <Route path='/forgot/password' element={<Password/>}/>
                 <Route path='/home' element={<Home/>}/>
+                <Route path='/history' element={<History/>}/>
             </Routes>
         </BrowserRouter>
     )

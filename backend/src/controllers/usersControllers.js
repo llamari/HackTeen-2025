@@ -26,7 +26,7 @@ export const SignIn = async (req, res) => {
     } catch (error) {
         console.error('Erro em Logar (SignIn):', error); 
         if (error.type == "verification") {
-            return res.status(401).json({
+            return res.status(400).json({
                 message: 'Erro de autenticação',
                 success: false,
                 error: error.message

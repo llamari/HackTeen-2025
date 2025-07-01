@@ -7,6 +7,7 @@ import { FaBars, FaPlay, FaPaperclip } from "react-icons/fa6";
 import { BsPauseFill } from "react-icons/bs";
 import { HiMiniArrowsRightLeft } from "react-icons/hi2";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../../Components/Sidebar";
 
 function Home() {
     const token = localStorage.getItem('token');
@@ -25,6 +26,16 @@ function Home() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [toBraille, setToBraille] = useState(true)
     const navigate = useNavigate()
+    const [largura, setlargura] = useState(0);
+    const sidebarRef = useRef(null);
+
+    function OpenSidebar() {
+        setlargura(200);
+    }
+
+    function CloseSidebar() {
+        setlargura(0);
+    }
 
     useEffect(() => {
         if (!token) {
@@ -42,6 +53,18 @@ function Home() {
             audioRef.current.load();
         }
     }, [audioUrl]);
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+                CloseSidebar(); // Fecha a sidebar se o clique for fora dela
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     async function TextToSpeach(e, texto) {
         e.preventDefault();
@@ -210,9 +233,11 @@ function Home() {
     return (
         <div id="main">
             <header id="home-header">
-                <FaBars />
+                <FaBars onClick={() => OpenSidebar()} style={{cursor: 'pointer'}}/>
                 <LuLogOut onClick={() => LogOut()} style={{ cursor: 'pointer' }} />
             </header>
+            <Sidebar largura={largura} sidebarRef={sidebarRef} />
+
             <img src="./assets/logo-inclusound.png" id="logo-image" />
             <h1 id="home-caption">A informação pertence a todos</h1>
             <div className="tab">

@@ -1,0 +1,25 @@
+.background-subject {
+    background-color: #71b7b9;
+    border-radius: 2rem 2rem 0 0;
+    padding: 1rem;
+    width: 90%;
+    margin: 2rem 5% 0 5%;
+    justify-content: center;
+    color: #08696B;
+    height: auto;
+    min-height: 100vh;
+}
+
+.background-subject h1{
+    color: #fff;
+}
+
+.text-history {
+    background-color: #fff;
+    width: 100%;
+    margin: 0 0 1rem 0;
+    padding: .2rem 1rem 1rem 1rem;
+    border-radius: 1rem;
+    font-size: medium;
+    font-weight: 600;
+}
