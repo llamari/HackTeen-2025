@@ -6,7 +6,6 @@ import Home from './Pages/Home';
 import UserRegistration from './Pages/SignUp';
 import { History } from './Pages/History';
 import { Objectives } from './Pages/Objectives';
-import { WhoAreUs } from './Pages/WhoAreUs';
 
 function Route1() { 
     return(

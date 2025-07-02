@@ -84,12 +84,12 @@ export function History() {
     return (
         <div id="main">
             <header id="home-header">
-                <FaBars onClick={() => OpenSidebar()} style={{ cursor: 'pointer' }} />
-                <LuLogOut onClick={() => LogOut()} style={{ cursor: 'pointer' }} />
+                <FaBars aria-label="Abrir aba lateral " role="button" tabIndex={0} onClick={() => OpenSidebar()} style={{ cursor: 'pointer' }} />
+                <LuLogOut aria-label="Fazer Logout do Sistema IncluSound" role="button" tabIndex={0} onClick={() => LogOut()} style={{ cursor: 'pointer' }} />
             </header>
             <Sidebar largura={largura} sidebarRef={sidebarRef} />
 
-            <img src="./assets/logo-inclusound.png" id="logo-image" />
+            <img src="./assets/logo-inclusound.png" id="logo-image" alt="" aria-hidden="true"/>
             <h1 id="home-caption">A informação pertence a todos</h1>
 
             <div className="background-subject">

@@ -15,6 +15,8 @@ function Sidebar({ largura, sidebarRef }) {
         <aside
             ref={sidebarRef} // Adiciona a referência
             id="barra-lateral"
+            role="navigation"
+            aria-label="Aba lateral de navegação "
             style={{
                 width: largura,
                 height: "100%",
@@ -33,17 +35,17 @@ function Sidebar({ largura, sidebarRef }) {
         >
             <h1>Bem vindo(a)!</h1>
 
-            <div className="sidebar-item" onClick={() => navigate('/home')} >
+            <button className="sidebar-item" aria-label="Ir para a página de Coversão de Texto" onClick={() => navigate('/home')} >
                 Conversão de texto
-            </div>
+            </button>
 
-            <div className="sidebar-item" onClick={() => navigate('/history')} >
+            <button className="sidebar-item" aria-label="Ir para a página de Histórico" onClick={() => navigate('/history')} >
                 Histórico
-            </div>
+            </button>
 
-            <div className="sidebar-item" onClick={() => navigate('/objectives')} >
+            <button className="sidebar-item" aria-label="Ir para a página de Proposta e Objetivos" onClick={() => navigate('/objectives')} >
                 Proposta e objetivos
-            </div>
+            </button>
         </aside>
     )
 }

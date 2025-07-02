@@ -46,27 +46,27 @@ function UserRegistration() {
                 <div id="sign-up">
                     <h1 id="title-link-signup">Bem-vindo(a) de volta!</h1>
                     <h2 id="caption-link-signup">Por um mundo com acesso ao conhecimento sem barreiras</h2>
-                    <button type="submit" className="goToSignup" onClick={() => navigate('/')}>Entrar</button>
+                    <button type="submit" aria-label="Entrar no Sistema IncluSound" className="goToSignup" onClick={() => navigate('/')}>Entrar</button>
                 </div>
                 <div id="login">
                     <h1 id="title-login">Cadastrar</h1>
                     <h2 id="caption-login">IncluSound, seu sistema de inclusão</h2>
-                    <form id="login-form">
+                    <form id="login-form" role="form">
                         <div className="inputLogin">
-                            <MdOutlineEmail color="#282828" />
-                            <input type="email" id="e-mail" placeholder="E-mail" />
+                            <MdOutlineEmail color="#282828" aria-hidden="true" />
+                            <input type="email" id="e-mail" aria-label="E-mail" placeholder="E-mail" />
                         </div>
                         <div className="inputLogin">
-                            <CiLock color="#282828" />
-                            <input type="password" id="password" placeholder="Senha" />
+                            <CiLock color="#282828"  aria-hidden="true" />
+                            <input type="password" aria-label="Senha"  id="password" placeholder="Senha" />
                         </div>
                         <div className="inputLogin">
-                            <CiLock color="#282828" />
-                            <input type="password" id="password2" placeholder="Confirmar senha" />
+                            <CiLock color="#282828" aria-hidden="true" />
+                            <input type="password" id="password2" aria-label="Confirmar a senha que foi cadastrada acima" placeholder="Confirmar senha" />
                         </div>
-                        <span id="diferent-passwords">As senhas devem se iguais!</span>
-                        <span id="error-message">Já existe uma conta com esse e-mail!</span>                        </form>
-                    <button type="submit" className="doLogin" onClick={SignUp}>Cadastrar</button>
+                        <span id="diferent-passwords" aria-live="assertive" role="alert" >As senhas devem se iguais!</span>
+                        <span id="error-message" aria-live="assertive" role="alert">Já existe uma conta com esse e-mail!</span>                        </form>
+                    <button type="submit" aria-label="Cadastrar-se no sistema IncluSound" className="doLogin" onClick={SignUp}>Cadastrar</button>
                 </div>
             </section>
         </div>

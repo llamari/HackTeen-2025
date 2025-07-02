@@ -48,18 +48,19 @@ export function Objectives() {
     return (
         <div id="main">
             <header id="home-header">
-                <FaBars onClick={() => OpenSidebar()} style={{ cursor: 'pointer' }} />
-                <LuLogOut onClick={() => LogOut()} style={{ cursor: 'pointer' }} />
+                <FaBars aria-label="Abrir aba lateral " role="button" tabIndex={0} onClick={() => OpenSidebar()} style={{ cursor: 'pointer' }} />
+                <LuLogOut aria-label="Fazer Logout do Sistema IncluSound" role="button" tabIndex={0} onClick={() => LogOut()} style={{ cursor: 'pointer' }} />
             </header>
             <Sidebar largura={largura} sidebarRef={sidebarRef} />
 
-            <img src="./assets/logo-inclusound.png" id="logo-image" />
+            <img src="./assets/logo-inclusound.png" id="logo-image" alt="" aria-hidden="true" />
             <h1 id="home-caption">A informação pertence a todos</h1>
 
             <div className="objective-div">
                 <h1 className="objective-title">Quem somos</h1>
                 <p>
-                    O IncluSound é uma startup que promove o acesso à informação para todas as pessoas, independentemente de sua forma de comunicação. Ela assegura que esse acesso ocorra de maneira livre e inclusiva, utilizando diferentes tecnologias que, combinadas, realizam um trabalho admirável.
+                    A IncluSound é uma startup que promove o acesso à informação para todas as pessoas, independentemente de sua forma de comunicação. Ela assegura que esse acesso ocorra de maneira livre e inclusiva, utilizando diferentes tecnologias que, combinadas, realizam um trabalho admirável. <br />
+                    Nossa equipe é formada por jovens talentosos e criativos, que se dedicam intensamente ao desenvolvimento de um sistema funcional, inclusivo e amigável. Eles não irão desistir enquanto não conseguirem proporcionar meios mais acessíveis de adquirir conhecimento!
                 </p>
 
                 <h1 className="objective-title">Nossa proposta</h1>
@@ -76,7 +77,7 @@ export function Objectives() {
                     Nosso objetivo é eliminar barreiras e tornar o conhecimento acessível para todos, utilizando tecnologia de conversão de texto e explorando novas formas de inclusão digital. <br />
                     Queremos expandir ainda mais nossos recursos de acessibilidade, a fim de atender plenamente às necessidades de todas as pessoas. E buscaremos soluções inovadoras para construir um futuro mais inclusivo, acessível e, acima de tudo, mais humano!
                 </p>
-                <img src="./assets/graphic.png" />
+                <img src="./assets/graphic.png" alt="Infográfico com dados do IBGE indicando que 45 milhões de brasileiros têm deficiência, 35,5 milhões têm deficiência visual, sendo 6 milhões cegos e 582 mil com baixa visão. Apenas 0,89% dos sites brasileiros passam nos testes de acessibilidade" />
 
             </div>
 

@@ -1,4 +1,4 @@
-#footer{
+#footer {
     background-color: #177173;
     margin: 0;
     height: 4rem;
@@ -8,14 +8,14 @@
     z-index: 99999999;
 }
 
-#footer-text{
+#footer-text {
     display: flex;
     align-items: center;
     justify-content: center;
     color: #1e1e1e;
 }
 
-#footer-icons{
+#footer-icons {
     float: right;
     color: #fff;
     position: absolute;
@@ -23,7 +23,7 @@
     display: flex;
 }
 
-.social-icon{
+.social-icon {
     border: #ffffff2f 2px solid;
     padding: 5px;
     display: flex;
@@ -31,4 +31,18 @@
     align-items: center;
     border-radius: 100%;
     margin: 5px;
+}
+
+.social-icon svg {
+    color: white;
+}
+
+.social-icon svg:hover {
+    color: #8bc5c7;
+}
+
+@media screen and (max-width: 750px) {
+    #footer {
+        flex-direction: column;
+    }
 }

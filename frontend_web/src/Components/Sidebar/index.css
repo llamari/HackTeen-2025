@@ -1,18 +1,23 @@
-.sidebar-item{
-    width: 80%;
-    background-color: #1AA1A7;
-    padding: 10px;
-    margin: 0 5% 1rem 5%;
-    border: 2px solid #fff;
-    border-radius: 1rem;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: larger;
-    text-align: center;
+
+.sidebar-item {
+  width: 80%;
+  background-color: transparent;
+  border: 2px solid white;
+  border-radius: 1rem;
+  color: white;
+  font-size: larger;
+  font-weight: 600;
+  padding: 10px;
+  margin: 0 5% 1rem 5%;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s, color 0.3s;
 }
 
-.sidebar-item a{
-    text-decoration: none; 
-    color: #fff;
-    font-size: larger;
+.sidebar-item:hover,
+.sidebar-item:focus {
+  background-color: white;
+  color: #1AA1A7;
+  outline: none;
 }
+

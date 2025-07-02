@@ -56,6 +56,8 @@ function Password() {
     }
 
     return (
+    
+    <main role="main">
         <div>
             {step === 1 && (
                 <section className="section">
@@ -63,17 +65,18 @@ function Password() {
                     <form onSubmit={Send} className="form-forgot">
                         <p>Insira seu e-mail para receber um código de autenticação</p>
                         <div className="inputLogin">
-                            <MdOutlineEmail color="#282828" />
+                            <MdOutlineEmail color="#282828" aria-hidden="true" />
                             <input
                                 type="email"
                                 placeholder="E-mail"
+                                aria-label="Inserir e-mail"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
                         </div>
                         <div className="flex">
-                            <button type="button" onClick={() => navigate(-1)} className="send">Voltar</button>
+                            <button type="button" onClick={() => navigate(-1)} className="send">Voltar</button> 
                             <button type="submit" className="send">Enviar</button>
                         </div>
                     </form>
@@ -86,10 +89,11 @@ function Password() {
                     <form onSubmit={Verify} className="form-forgot">
                         <p>Insira o código que foi enviado ao seu e-mail</p>
                         <div className="inputLogin">
-                            <CiLock color="#282828" />
+                            <CiLock color="#282828" aria-hidden="true" />
                             <input
                                 type="text"
                                 placeholder="Código"
+                                aria-label="Código"
                                 value={code}
                                 onChange={(e) => setCode(e.target.value)}
                                 required
@@ -108,26 +112,29 @@ function Password() {
                     <h2 className="title-pass">Nova senha</h2>
                     <form onSubmit={Change} className="form-forgot" id="newPassword">
                         <div className="inputLogin">
-                            <CiLock color="#282828" />
+                            <CiLock color="#282828" aria-hidden="true" />
                             <input
                                 type="password"
                                 placeholder="Nova senha"
+                                aria-label="Inserir nova senha"
                                 value={password1}
                                 onChange={(e) => setPassword1(e.target.value)}
                                 required
                             />
                         </div>
                         <div className="inputLogin">
-                            <CiLock color="#282828" />
+                            <CiLock color="#282828" aria-hidden="true" />
                             <input
                                 type="password"
                                 placeholder="Confirmar senha"
+                                aria-label="Confirmar nova senha"
+                                aria-describedby={showError ? "erro-senha" : undefined}
                                 value={password2}
                                 onChange={(e) => setPassword2(e.target.value)}
                                 required
                             />
                         </div>
-                        {showError && <p style={{ color: "red", fontWeight: 500 }}>As senhas devem ser iguais</p>}
+                        {showError && <p id="erro-senha" style={{ color: "red", fontWeight: 500 }}>As senhas devem ser iguais</p>}
                         <div className="flex">
                             <button type="button" onClick={() => setStep(2)} className="send">Voltar</button>
                             <button type="submit" className="send">Redefinir</button>
@@ -138,13 +145,14 @@ function Password() {
 
             {step === 4 && (
                 <section className="section">
-                    <div className="form-forgot" style={{ alignItems: 'center' }}>
+                    <div className="form-forgot" style={{ alignItems: 'center' }} aria-live="polite">
                         <h2>Nova senha definida com sucesso!</h2>
                         <button onClick={() => navigate('/')} className="send">Ir para o login</button>
                     </div>
                 </section>
             )}
         </div>
+    </main>
     );
 }
 

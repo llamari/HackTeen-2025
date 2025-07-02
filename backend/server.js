@@ -6,7 +6,7 @@ const port = 5000;
 
 import usersRoutes from './src/routes/usersRoutes.js';
 import ttsRoutes from './src/routes/ttsRoutes.js';
-import SwaggerImport from '../docs/swagger.json' with {type: 'json'}
+import SwaggerImport from './swagger.json' with {type: 'json'}
 import { sequelize } from './src/database/database.js';
 import User from './src/models/usersModels.js'; 
 import Text from './src/models/ttsModels.js';

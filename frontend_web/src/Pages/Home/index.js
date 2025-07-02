@@ -135,7 +135,7 @@ function Home() {
             const cleanBase64 = fullBase64.split(',')[1]; // Remove o "data:image/...;base64,"
 
             // Enviar para backend
-            enviarImagemParaBackend(cleanBase64);
+             enviarImagemParaBackend(cleanBase64);
         };
 
         if (file) {
@@ -234,17 +234,17 @@ function Home() {
     return (
         <div id="main">
             <header id="home-header">
-                <FaBars onClick={() => OpenSidebar()} style={{cursor: 'pointer'}}/>
-                <LuLogOut onClick={() => LogOut()} style={{ cursor: 'pointer' }} />
+                <FaBars aria-label="Abrir aba lateral " role="button" tabIndex={0} onClick={() => OpenSidebar()} style={{cursor: 'pointer'}}/>
+                <LuLogOut aria-label="Fazer Logout do Sistema IncluSound" role="button" tabIndex={0}  onClick={() => LogOut()} style={{ cursor: 'pointer' }} />
             </header>
             <Sidebar largura={largura} sidebarRef={sidebarRef} />
 
-            <img src="./assets/logo-inclusound.png" id="logo-image" />
+            <img src="./assets/logo-inclusound.png" id="logo-image" alt="" aria-hidden="true"/>
             <h1 id="home-caption">A informação pertence a todos</h1>
-            <div className="tab">
-                <button className="tablinks" onClick={(event) => openTab(event, 'TTS')} id="defaultOpen">Texto para som</button>
-                <button className="tablinks" onClick={(event) => openTab(event, 'ITT')}>Imagem para som</button>
-                <button className="tablinks" onClick={(event) => openTab(event, 'Braille')}>Conversões em braille</button>
+            <div className="tab" role="tablist" aria-label="Funcionalidades">
+                <button className="tablinks" role="tab" onClick={(event) => openTab(event, 'TTS')} id="defaultOpen">Texto para som</button>
+                <button className="tablinks" role="tab" onClick={(event) => openTab(event, 'ITT')}>Imagem para som</button>
+                <button className="tablinks" role="tab" onClick={(event) => openTab(event, 'Braille')}>Conversões em braille</button>
             </div>
             <div id="TTS" className="tabcontent">
                 <form className="form-tts">
@@ -260,6 +260,7 @@ function Home() {
                     <select //absolutamente TODOS os idiomas que a biblioteca aceita segundo as minhas pesquisas
                         id="language"
                         value={language}
+                        aria-label="Selecionar idioma do áudio"
                         onChange={(e) => setLanguage(e.target.value)}
                     >
                         <option value="af">Africâner (af)</option>
@@ -325,12 +326,13 @@ function Home() {
                     </div>
                 </form>
 
-                {error && <div style={{ color: 'red' }}>{error}</div>}
+                {error && <div style={{ color: 'red' }} aria-live="assertive">{error}</div>}
                 {audioUrl && (
                     <div style={{ width: "100%", maxHeight: "40px", display: "flex" }} id="audio-player">
                         <div>
                             <button
                                 id="play-button"
+                                aria-label={isPlaying ? "Pausar áudio"  : "Reproduzir áudio"}
                                 onClick={() => {
                                     if (waveformRefTTS.current) {
                                         waveformRefTTS.current.playPause();
@@ -364,9 +366,9 @@ function Home() {
                         {fileName}
                         <FaPaperclip />
                     </label>
-                    <input id="file-upload" type="file" onChange={handleImageChange} />
+                    <input id="file-upload" aria-label="Selecionar imagem para conversão" type="file" onChange={handleImageChange} />
 
-                    <button onClick={(e) => TextToSpeech(e, imageToConvert)} disabled={isLoading || !fileName} className="home-button" style={{ margin: 0 }}>
+                    <button  aria-label="Ouvir áudio que descreve a imagem selecionada para conversão" onClick={(e) => TextToSpeech(e, imageToConvert)} disabled={isLoading || !fileName} className="home-button" style={{ margin: 0 }}>
                         Ouvir áudio
                     </button>
                 </form>
@@ -375,6 +377,7 @@ function Home() {
                         <div>
                             <button
                                 id="play-button"
+                                aria-label={isPlaying ? "Pausar áudio"  : "Reproduzir áudio"}
                                 onClick={() => {
                                     if (waveformRefITT.current) {
                                         waveformRefITT.current.playPause();
@@ -406,7 +409,8 @@ function Home() {
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-evenly', fontSize: 'x-large', color: 'black', height: '7vh' }}>
                             Texto
-                            <HiMiniArrowsRightLeft onClick={() => setToBraille(false)} style={{ cursor: 'pointer' }} />
+                            <HiMiniArrowsRightLeft aria-label="Fazer conversão de texto para braille" role="button"
+                            tabIndex={0} onClick={() => setToBraille(false)} style={{ cursor: 'pointer' }} />
                             Braille
                         </div>
                         <div style={{ width: '100%', height: '100%', display: 'flex' }}>
@@ -414,16 +418,29 @@ function Home() {
                                 setTextToBraille(e.target.value);
                                 convertToBraille(e.target.value)
                             }} />
-                            <div style={{ display: 'flex', alignItems: 'start', width: '50%', backgroundColor: '#E2E2E2', color: '#1E1E1E' }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'start',
+                                width: '50%',
+                                backgroundColor: '#E2E2E2',
+                                color: '#1E1E1E',
+                                padding: '10px',
+                                overflowY: 'auto',
+                                height: '53vh',
+                                wordBreak: 'break-word',
+                                whiteSpace: 'pre-wrap'
+                            }}>
                                 {brailleToText}
                             </div>
+
                         </div>
                     </div>
                     :
                     <div>
                         <div style={{ display: 'flex', justifyContent: 'space-evenly', fontSize: 'x-large', color: 'black', height: '7vh' }}>
                             Braille
-                            <HiMiniArrowsRightLeft onClick={() => setToBraille(true)} style={{ cursor: 'pointer' }} />
+                            <HiMiniArrowsRightLeft aria-label="Fazer conversão de braille para texto" role="button"
+                            tabIndex={0} onClick={() => setToBraille(true)} style={{ cursor: 'pointer' }} />
                             Texto
                         </div>
                         <div style={{ width: '100%', height: '100%', display: 'flex' }}>
@@ -431,7 +448,18 @@ function Home() {
                                 setBrailleToText(e.target.value);
                                 convertToText(e.target.value)
                             }} />
-                            <div style={{ display: 'flex', alignItems: 'start', width: '50%', backgroundColor: '#E2E2E2', color: '#1E1E1E' }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'start',
+                                width: '50%',
+                                backgroundColor: '#E2E2E2',
+                                color: '#1E1E1E',
+                                padding: '10px',
+                                overflowY: 'auto',
+                                height: '53vh',
+                                wordBreak: 'break-word',
+                                whiteSpace: 'pre-wrap'
+                            }}>
                                 {textToBraille}
                             </div>
                         </div>

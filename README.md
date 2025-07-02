@@ -61,7 +61,7 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 3️⃣ **Iniciar o servidor**:
 
   ```bash
-    nodemon server.js
+    npm start
   ```
 
 ### **Frontend Web**
@@ -96,11 +96,11 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 
 🔹 🚀 Conversão de Texto para Áudio: Transforma qualquer texto em áudio com alta qualidade usando node-gtts.
 
-🔹 ⠿ Conversão de Texto para Braille e Braille para Áudio: Transforma qualquer texto em braille ou braille em áudio utilizando um sistema de mapeamento de pontos Braille.
+🔹 ⠿ Conversão de Texto para Braille e Braille para Texto: Transforma qualquer texto em braille ou braille em texto utilizando um sistema de mapeamento de pontos Braille.
 
 🔹 📸 Descrição de Imagem: Descreve detalhadamente imagens, inclusive as que possuem algum texto, este também é apresentado.
 
-🔹 📝 Resumo Inteligente de Textos: Utiliza node-summary para criar versões compactas dos textos, facilitando a compreensão.
+🔹 📝 Resumo Inteligente de Textos: Utiliza uma API do Gemini 1.5 Flash para criar versões compactas dos textos, facilitando a compreensão.
 
 🔹 🔒 Autenticação Segura: Implementação de cadastro e login com autenticação JWT, garantindo segurança aos usuários.
 
@@ -118,11 +118,21 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 
 | Método | Rota | Descrição |
 | ------------- | ------------- | ------------- |
-| POST  | /texttosound  | Converte um texto em áudio |
-| POST  | /summarize  | Resume um texto automaticamente |
-| POST | /signup | Registra um novo usuário |
-| PUT | /signin | Autentica um usuário existente |
-| GET | /yourtexts | Lista os textos processados pelo usuário |
+| POST  | /tts/ | Converte um texto em áudio |
+| POST  | /tts/summarize  | Resume um texto automaticamente |
+| POST | /tts/describeImage | Descreve uma imagem em texto |
+| POST | /tts/textToBraille | Converte o texto recebido em Braille Unicode Grau 1 |
+| POST | /tts/brailleToText | Converte Braille Unicode Grau 1 em texto |
+| POST | /tts/brailleDisplay | Converte o texto recebido em um json com os pontos para o Display Braille|
+| GET | /tts/yourtexts | Retorna todos os textos já enviados pelo usuário |
+| GET | /users/ | Retorna todos os usuários cadastrados |
+| POST | /users/signup | Registra um novo usuário |
+| PUT | /users/signin | Autentica um usuário existente |
+| DELETE | /users/delete | Excluí um usuário |
+| PUT | /users/forgot/password | Usuário envia seu e-mail para receber código de alteração da sua senha |
+| PUT | /users/verify/code | Autentica o código inserido pelo usuário para alteração de senha |
+| PUT | /users/new/password | Usuário insere uma nova senha |
+
 
 ---
 
@@ -144,7 +154,9 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 
 🔹 **node-gtts (Google Text-to-Speech)** → Utilizamos **Google Text-to-Speech (gTTS)** para conversão de texto em áudio, garantindo suporte a múltiplos idiomas e alta qualidade sonora com fácil implementação via NPM.  
 
-🔹 **node-summary** → Integramos **node-summary** para criação de resumos automáticos, facilitando o consumo de grandes quantidades de texto de forma compacta e compreensível com fácil implementação via NPM.  
+🔹 **React.js** → O frontend web foi construído utilizando **React.js.**
+
+🔹 **API do Gemini 1.5 Flash** → O sistema utiliza a API do **Gemini 1.5 Flash** para fazer resumos de textos e descrição de imagens.
 
 🔹 **SQLite + Sequelize** → O projeto utiliza **SQLite** para armazenar os dados localmente, garantindo rapidez e portabilidade, combinado com **Sequelize** para gerenciamento ORM, facilitando consultas e manipulação de dados.  
 
