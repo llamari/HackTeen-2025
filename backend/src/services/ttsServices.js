@@ -40,8 +40,8 @@ export const SummariseService = async (userId, text) => {
         const requestBody = {
             contents: [
                 {
-                    parts: [
-                        { text: `Resuma o seguinte texto, no idioma que estiver: \n${text}` }
+                    parts: [{ text: `Resuma o seguinte texto mantendo o mesmo idioma em que ele foi escrito. Não traduza. Mantenha os principais pontos e informações relevantes. Texto: \n${text}` }
+                        
                     ],
                 },
             ],

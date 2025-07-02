@@ -77,7 +77,7 @@ export function Objectives() {
                     Nosso objetivo é eliminar barreiras e tornar o conhecimento acessível para todos, utilizando tecnologia de conversão de texto e explorando novas formas de inclusão digital. <br />
                     Queremos expandir ainda mais nossos recursos de acessibilidade, a fim de atender plenamente às necessidades de todas as pessoas. E buscaremos soluções inovadoras para construir um futuro mais inclusivo, acessível e, acima de tudo, mais humano!
                 </p>
-                <img src="./assets/graphic.png" alt="Infográfico com dados do IBGE indicando que 45 milhões de brasileiros têm deficiência, 35,5 milhões têm deficiência visual, sendo 6 milhões cegos e 582 mil com baixa visão. Apenas 0,89% dos sites brasileiros passam nos testes de acessibilidade" />
+                <img src="./assets/graphic.png" style={{ marginBottom: '20px'}}  alt="Infográfico com dados do IBGE indicando que 45 milhões de brasileiros têm deficiência, 35,5 milhões têm deficiência visual, sendo 6 milhões cegos e 582 mil com baixa visão. Apenas 0,89% dos sites brasileiros passam nos testes de acessibilidade" />
 
             </div>
 
