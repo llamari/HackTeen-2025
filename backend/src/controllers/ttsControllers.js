@@ -9,11 +9,11 @@ export const TextToSound = async (req, res) => {
   const { text, language } = req.body;
 
   if (!text) {
-    return res.status(400).json({ error: 'Texto não fornecido.' });
+    return res.status(400).json({ error: 'Texto não fornecido' });
   }
 
   if (!language) {
-    return res.status(400).json({ error: 'Idioma não fornecido.' });
+    return res.status(400).json({ error: 'Idioma não fornecido' });
   }
 
   try {
@@ -37,7 +37,7 @@ export const TextToSound = async (req, res) => {
     if (error.type === 'audio') {
       return res.status(500).json({ error: error.message });
     }
-    return res.status(500).json({ error: 'Erro inesperado.' });
+    return res.status(500).json({ error: 'Erro inesperado' });
   }
 };
 
@@ -55,7 +55,7 @@ export const Summarise = async (req, res) => {
   } catch (error) {
     console.error('Erro no resumo:', error);
     return res.status(500).json({
-      error: 'Erro durante o resumo'
+      error: 'Erro inesperado'
     });
   }
 };
@@ -67,7 +67,7 @@ export const DescribeImage = async (req, res) => {
     const { imageBase64 } = req.body;
 
     if (!imageBase64) {
-      return res.status(400).json({ error: 'A imagem é obrigatória.' });
+      return res.status(400).json({ error: 'A imagem é obrigatória' });
     }
 
     const description = await DescribeImageService(userId, imageBase64);
@@ -75,7 +75,7 @@ export const DescribeImage = async (req, res) => {
 
   } catch (error) {
     console.error("Erro no controller:", error.message);
-    return res.status(500).json({ error: "Erro ao processar imagem." });
+    return res.status(500).json({ error: "Erro inesperado" });
   }
 };
 
@@ -86,7 +86,7 @@ export const YourTexts = async (req, res) => {
     res.json({ texts: texts });
   } catch (error) {
     console.error('Erro', error);
-    return res.status(500).json({ error: 'Erro inesperado.' });
+    return res.status(500).json({ error: 'Erro inesperado' });
   }
 }
 
@@ -100,7 +100,7 @@ export const Braille = async (req, res) => {
     if (error.type == "invalid") {
       return res.status(400).json({ error: error.message })
     }
-    return res.status(500).json({ error: 'Erro inesperado.' });
+    return res.status(500).json({ error: 'Erro inesperado' });
   }
 }
 
@@ -114,7 +114,7 @@ export const BrailleToText = async (req, res) => {
     if (error.type == "invalid") {
       return res.status(400).json({ error: error.message })
     }
-    return res.status(500).json({ error: 'Erro inesperado.' });
+    return res.status(500).json({ error: 'Erro inesperado' });
   }
 }
 
@@ -128,6 +128,6 @@ export const BrailleForDisplay = async (req, res) => {
     if (error.type == "invalid") {
       return res.status(400).json({ error: error.message })
     }
-    return res.status(500).json({ error: 'Erro inesperado.' });
+    return res.status(500).json({ error: 'Erro inesperado' });
   }
 }

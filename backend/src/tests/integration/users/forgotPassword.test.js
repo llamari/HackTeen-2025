@@ -61,7 +61,7 @@ describe('Teste do forgot password', () => {
 
         expect(res.status).toBe(202);
         expect(res.body).toHaveProperty('message');
-        expect(res.body.message).toMatch('Senha mudada');
+        expect(res.body.message).toMatch('Senha atualizada');
         expect(res.body.success).toBe(true);
     });
 });

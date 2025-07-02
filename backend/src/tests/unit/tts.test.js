@@ -62,31 +62,31 @@ describe('Testes do TTS', () => {
         const res = mockResponse();
         await TextToSound(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ error: 'Texto não fornecido.' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Texto não fornecido' });
     }); //Falha 1
     test('TextToSound deve retornar 400 se idioma não for fornecido', async () => {
         const req = mockRequest({ text: 'Teste' }, { id: 1 });
         const res = mockResponse();
         await TextToSound(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ error: 'Idioma não fornecido.' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Idioma não fornecido' });
     }); //Falha 2
     test('TextToSound deve retornar 400 em erro do banco', async () => {
         const req = mockRequest({ text: 'Teste', language: 'pt' }, { id: 1 });
         const res = mockResponse();
-        ttsServices.TextToSoundService.mockRejectedValue({ type: 'db', message: 'Erro ao salvar texto no banco.' });
+        ttsServices.TextToSoundService.mockRejectedValue({ type: 'db', message: 'Erro ao salvar texto no banco' });
         await TextToSound(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ error: 'Erro ao salvar texto no banco.' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro ao salvar texto no banco' });
     }); //Falha 3
 
     test('TextToSound deve retornar 500 em erro de áudio', async () => {
         const req = mockRequest({ text: 'Teste', language: 'pt' }, { id: 1 });
         const res = mockResponse();
-        ttsServices.TextToSoundService.mockRejectedValue({ type: 'audio', message: 'Erro ao gerar áudio.' });
+        ttsServices.TextToSoundService.mockRejectedValue({ type: 'audio', message: 'Erro inesperado' });
         await TextToSound(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: 'Erro ao gerar áudio.' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado' });
     }); //Falha 4
 
     test('TextToSound deve retornar 500 em erro inesperado', async () => {
@@ -95,12 +95,12 @@ describe('Testes do TTS', () => {
         ttsServices.TextToSoundService.mockRejectedValue(new Error('Erro desconhecido'));
         await TextToSound(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado.' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado' });
     }); //Falha 5
 
     // Summarise
     test('Summarise deve retornar 200 e o resumo', async () => {
-        const req = mockRequest({ text: 'Inclusão é mais do que aceitar, é abraçar. É entender que cada pessoa carrega uma história, um jeito único de existir, de sentir e de aprender. É quando enxergamos além das diferenças e percebemos que, no fundo, todos só querem pertencer, ser ouvidos e respeitados. Quando olhamos nos olhos do outro e dizemos: "Você importa, exatamente como é", construímos um mundo mais justo. Um mundo onde ninguém fica para trás, onde diversidade não é obstáculo, mas ponte. Porque cada voz tem valor, cada sonho merece espaço, e cada passo dado junto faz a caminhada mais bonita. Ser inclusivo não é favor, é amor em ação. É humanidade na sua forma mais pura e necessária.' });
+        const req = mockRequest({ text: 'Inclusão é mais do que aceitar, é abraçar. É entender que cada pessoa carrega uma história, um jeito único de existir, de sentir e de aprender. É quando enxergamos além das diferenças e percebemos que, no fundo, todos só querem pertencer, ser ouvidos e respeitados. Quando olhamos nos olhos do outro e dizemos: "Você importa, exatamente como é", construímos um mundo mais justo Um mundo onde ninguém fica para trás, onde diversidade não é obstáculo, mas ponte. Porque cada voz tem valor, cada sonho merece espaço, e cada passo dado junto faz a caminhada mais bonita. Ser inclusivo não é favor, é amor em ação. É humanidade na sua forma mais pura e necessária.' });
         const res = mockResponse();
         const summary = 'Resumo do texto';
         ttsServices.SummariseService.mockResolvedValue(summary);
@@ -123,7 +123,7 @@ describe('Testes do TTS', () => {
         ttsServices.SummariseService.mockRejectedValue(new Error('Erro no serviço'));
         await Summarise(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: 'Erro durante o resumo' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado' });
     }); //Falha 2
 
     // YourTexts
@@ -142,7 +142,7 @@ describe('Testes do TTS', () => {
         ttsServices.YourTextsService.mockRejectedValue(new Error('Erro desconhecido'));
         await YourTexts(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado.' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado' });
     }) //Falha 1
 
     // DescribeImage 
@@ -159,15 +159,15 @@ describe('Testes do TTS', () => {
         const res = mockResponse();
         await DescribeImage(req, res);
         expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({ error: 'A imagem é obrigatória.' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'A imagem é obrigatória' });
     }); //Falha 1
     test('DescribeImage deve retornar 500 em erro do serviço ', async () => {
         const req = mockRequest({ imageBase64: 'data:image/jpeg;base64,fakeImage' })
         const res = mockResponse();
-        ttsServices.DescribeImageService.mockRejectedValue(new Error("Erro ao processar imagem."));
+        ttsServices.DescribeImageService.mockRejectedValue(new Error("Erro ao processar imagem"));
         await DescribeImage(req, res);
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ error: 'Erro ao processar imagem.' });
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado' });
     }); //Falha 2
 
     // Braille

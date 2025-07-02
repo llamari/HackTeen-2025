@@ -31,7 +31,7 @@ describe('Testes do Users', () => {
         const controller = await import('../../controllers/usersControllers.js'); //Atribuição dos valores das variaveis
         GetUsers = controller.GetUsers;
         SignIn = controller.SignIn;
-        SignUp = controller.SignUp; 
+        SignUp = controller.SignUp;
         Delete = controller.Delete;
         ForgotPassword = controller.ForgotPassword;
         Verify = controller.Verify;
@@ -56,6 +56,15 @@ describe('Testes do Users', () => {
 
         expect(res.json).toHaveBeenCalledWith(users);
     }); //Sucesso
+        test('GetUsers deve retornar 500 em erro inesperado', async () => {
+        const req = mockRequest({}, { id: 42 });
+        const res = mockResponse();
+        const users = [{ id: 1 }, { email: 'test@example.com' }];
+        usersServices.GetUsersService.mockRejectedValue(new Error('Erro desconhecido'));
+        await GetUsers(req, res);
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado' });
+    }) //Falha 1
 
     //SignIn
     test('SignIn deve retornar 400 se email ou senha não forem fornecidos', async () => {
@@ -107,7 +116,7 @@ describe('Testes do Users', () => {
         await SignUp(req, res);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Erro interno no servidor' });
+        expect(res.json).toHaveBeenCalledWith({ message: 'Erro inesperado' });
     }); //Falha 2
 
     test('SignUp deve retornar 201 e o usuário criado', async () => {
@@ -133,12 +142,12 @@ describe('Testes do Users', () => {
         const req = mockRequest({ email: 'erro@example.com' });
         const res = mockResponse();
 
-        usersServices.DeleteUserService.mockRejectedValue(new Error('Falha ao deletar'));
+        usersServices.DeleteUserService.mockRejectedValue(new Error('Erro inesperado'));
 
         await Delete(req, res);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Falha ao deletar' });
+        expect(res.json).toHaveBeenCalledWith({ message: 'Erro inesperado' });
     }); //Falha 1
 
     test('Delete deve retornar 200 ao deletar usuário existente', async () => {
@@ -152,7 +161,7 @@ describe('Testes do Users', () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.send).toHaveBeenCalledWith({
             success: true,
-            message: "Usuário deletado com sucesso"
+            message: "Usuário excluído com sucesso"
         });
     }); //Sucesso
 
@@ -167,7 +176,7 @@ describe('Testes do Users', () => {
         await ForgotPassword(req, res);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Erro ao processar a requisição' });
+        expect(res.json).toHaveBeenCalledWith({ message: 'Erro inesperado' });
     }); //Falha 1
 
     test('ForgotPassword deve retornar 200 e o código gerado', async () => {
@@ -218,6 +227,7 @@ describe('Testes do Users', () => {
         await Verify(req, res);
 
         expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({ error: 'Erro inesperado' });
     });//Falha 3
 
     test('Verify deve retornar 202 se o código estiver correto', async () => {
@@ -256,7 +266,7 @@ describe('Testes do Users', () => {
         await NewPassword(req, res);
 
         expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.json).toHaveBeenCalledWith({ message: 'Erro ao processar a requisição' });
+        expect(res.json).toHaveBeenCalledWith({ message: 'Erro inesperado' });
     });//Falha 2
 
     test('NewPassword deve retornar 202 se senha for atualizada', async () => {
@@ -269,7 +279,7 @@ describe('Testes do Users', () => {
 
         expect(res.status).toHaveBeenCalledWith(202);
         expect(res.json).toHaveBeenCalledWith({
-            message: "Senha mudada",
+            message: "Senha atualizada",
             success: true
         });
     });

@@ -1,0 +1,1136 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "IncluSound API",
+    "description": "Documentação da API do projeto IncluSound",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000",
+      "description": "Servidor local para a utilização da API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Users",
+      "description": "Rotas de criação e autenticação de usuários"
+    },
+    {
+      "name": "Text to Sound",
+      "description": "Rotas de processamento de texto para som"
+    },
+    {
+      "name": "Text to Braille",
+      "description": "Rotas de conversão de texto para braille"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Lista todos os usuários",
+        "description": "Retorna todos os usuários cadastrados.",
+        "responses": {
+          "200": {
+            "description": "Lista de usuários retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/signup": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Registra um novo usuário",
+        "description": "Rota pública para registro de novos usuários.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Usuário criado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignUpResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Usuário já existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/signin": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Faz login de um usuário",
+        "description": "Rota pública para autenticação de usuários.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Login realizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro de autenticação",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/delete": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Remove um usuário",
+        "description": "Remove um usuário do sistema (requer autenticação).",
+        "responses": {
+          "200": {
+            "description": "Usuário excluído com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/users/forgot/password": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Solicita redefinição de senha",
+        "description": "Rota pública para solicitar redefinição de senha.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "E-mail enviado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/verify/code": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Verifica código de redefinição",
+        "description": "Rota pública para verificar código de redefinição de senha.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyCodeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Usuário verificado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Usuário não existe",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Código inválido",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/new/password": {
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Redefine a senha",
+        "description": "Redefine a senha do usuário.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewPasswordRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "description": "Senha atualizada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Informações essenciais faltando",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tts": {
+      "post": {
+        "tags": [
+          "Text to Sound"
+        ],
+        "summary": "Converte texto em áudio",
+        "description": "Converte texto em áudio (requer autenticação).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TTSRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Aúdio gerado com sucesso",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/TTSResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro na requisição",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tts/summarize": {
+      "post": {
+        "tags": [
+          "Text to Sound"
+        ],
+        "summary": "Resume um texto",
+        "description": "Resume um texto (requer autenticação).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SummarizeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Resumo gerado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SummarizeResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Informação essencial faltando",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tts/describeImage": {
+      "post": {
+        "tags": [
+          "Text to Sound"
+        ],
+        "summary": "Descreve uma imagem",
+        "description": "Descreve uma imagem enviada (requer autenticação).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DescribeImageRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Descrição gerada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DescribeImageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "A imagem é obrigatória",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tts/yourtexts": {
+      "get": {
+        "tags": [
+          "Text to Sound"
+        ],
+        "summary": "Lista textos do usuário",
+        "description": "Lista todos os textos do usuário autenticado.",
+        "responses": {
+          "200": {
+            "description": "Lista de textos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserText"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tts/textToBraille": {
+      "post": {
+        "tags": [
+          "Text to Braille"
+        ],
+        "summary": "Converte texto em Braille",
+        "description": "Converte texto para Braille (requer autenticação).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TextToBrailleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Texto convertido com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TextToBrailleResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Informação essencial faltando",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tts/brailleToText": {
+      "post": {
+        "tags": [
+          "Text to Braille"
+        ],
+        "summary": "Converte Braille em texto",
+        "description": "Converte Braille para texto (requer autenticação).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrailleToTextRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Braille convertido com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrailleToTextResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Informação essencial faltando",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/tts/brailleDisplay": {
+      "post": {
+        "tags": [
+          "Text to Braille"
+        ],
+        "summary": "Gera dados para display Braille",
+        "description": "Gera dados para exibição em display Braille (requer autenticação).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BrailleDisplayRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Dados gerados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrailleDisplayResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Informação essencial faltando",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro inesperado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 1
+          },
+          "email": {
+            "type": "string",
+            "example": "usuario@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "senhaSegura123"
+          },
+          "code": {
+            "type": "string",
+            "example": "ABC123"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-01T10:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-01T12:30:00Z"
+          }
+        }
+      },
+      "SignUpRequest": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "novo@email.com"
+          },
+          "password": {
+            "minLength": 6,
+            "type": "string",
+            "example": "12345678"
+          }
+        }
+      },
+      "SignUpResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Usuário criado com sucesso"
+          },
+          "id": {
+            "type": "integer",
+            "example": 42
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "SignInRequest": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "usuario@email.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "senha123"
+          }
+        }
+      },
+      "SignInResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Login realizado com sucesso"
+          },
+          "token": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "DeleteUserRequest": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "remover@email.com"
+          }
+        }
+      },
+      "ForgotPasswordRequest": {
+        "required": [
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "recuperar@email.com"
+          }
+        }
+      },
+      "VerifyCodeRequest": {
+        "required": [
+          "code",
+          "email"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "example": "X9Y8Z7"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "usuario@email.com"
+          }
+        }
+      },
+      "NewPasswordRequest": {
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "novaSenha456"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "usuario@email.com"
+          }
+        }
+      },
+      "TTSRequest": {
+        "required": [
+          "language",
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "Olá, este é um teste de voz"
+          },
+          "language": {
+            "type": "string",
+            "example": "pt-BR"
+          }
+        }
+      },
+      "TTSResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Áudio gerado com sucesso"
+          },
+          "file": {
+            "type": "string",
+            "example": "voz_gerada_0725.mp3"
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "SummarizeRequest": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "O Brasil é um país com grande biodiversidade e riquezas naturais."
+          }
+        }
+      },
+      "SummarizeResponse": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "type": "string",
+            "example": "O Brasil possui ampla biodiversidade e riquezas naturais."
+          }
+        }
+      },
+      "DescribeImageRequest": {
+        "required": [
+          "imageBase64"
+        ],
+        "type": "object",
+        "properties": {
+          "imageBase64": {
+            "type": "string",
+            "example": "/9j/4AAQSkZJRgABAQAAAQABAAD..."
+          }
+        }
+      },
+      "DescribeImageResponse": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "example": "Um cachorro correndo em um campo verde."
+          }
+        }
+      },
+      "UserText": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 17
+          },
+          "content": {
+            "type": "string",
+            "example": "Este é um conteúdo de usuário salvo."
+          },
+          "user_id": {
+            "type": "integer",
+            "example": 3
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-06-30T08:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-07-01T11:45:00Z"
+          }
+        }
+      },
+      "TextToBrailleRequest": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "Acessibilidade é importante."
+          }
+        }
+      },
+      "TextToBrailleResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Texto convertido com sucesso"
+          },
+          "text": {
+            "type": "string",
+            "example": "⠁⠉⠑⠎⠎⠊⠃⠊⠇⠊⠙⠁⠙⠑⠀⠑⠀⠊⠍⠏⠕⠗⠞⠁⠝⠞⠑"
+          },
+          "id": {
+            "type": "integer",
+            "example": 101
+          }
+        }
+      },
+      "BrailleToTextRequest": {
+        "required": [
+          "braille"
+        ],
+        "type": "object",
+        "properties": {
+          "braille": {
+            "type": "string",
+            "example": "⠋⠕⠗⠉⠁⠀⠞⠑⠍⠀⠙⠑⠀⠃⠗⠊⠇⠓⠁"
+          }
+        }
+      },
+      "BrailleToTextResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "example": "Força tem de brilhar"
+          }
+        }
+      },
+      "BrailleDisplayRequest": {
+        "required": [
+          "text"
+        ],
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "example": "Teste! 123"
+          }
+        }
+      },
+      "BrailleDisplayResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "string",
+            "example": "{{0, 0, 0, 0, 0, 1},{0, 1, 1, 1, 1, 0},{1, 0, 0, 1, 0, 0},{0, 1, 1, 0, 1, 0},{0, 1, 1, 1, 1, 0},{1, 0, 0, 1, 0, 0},{0, 0, 1, 1, 1, 0},{0, 0, 0, 0, 0, 0},{0, 1, 0, 1, 1, 1},{1, 0, 0, 0, 0, 0},{1, 0, 1, 0, 0, 0},{1, 1, 0, 0, 0, 0}};"
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Operação concluída com sucesso"
+          },
+          "success": {
+            "type": "boolean",
+            "example": true
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Erro"
+          },
+          "error": {
+            "type": "string",
+            "example": "Error"
+          },
+          "success": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Token de autenticação ausente ou inválido",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "examples": {
+              "noToken": {
+                "value": {
+                  "message": "Token não fornecido",
+                  "success": false
+                }
+              },
+              "invalidToken": {
+                "value": {
+                  "message": "Token inválido",
+                  "success": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "Token JWT obtido no login. Deve ser incluído no cabeçalho Authorization como 'Bearer {token}'",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -35,7 +35,7 @@ describe('Testando rota PUT /users/signin', () => {
       .put('/users/signin')
       .send({ email: "saralamari3@gmail.com", password: "senhaerrada" }); 
 
-    expect(res.status).toBe(401);
+    expect(res.status).toBe(400);
     expect(res.body.success).toBe(false);
     expect(res.body.message).toBe('Erro de autenticação');
     expect(res.body).toHaveProperty('error');

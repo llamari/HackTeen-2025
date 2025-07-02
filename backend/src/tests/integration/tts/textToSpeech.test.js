@@ -78,7 +78,7 @@ describe('Teste do endpoint /tts', () => {
             .send({ language: 'en' });
 
         expect(res.status).toBe(400);
-        expect(res.body.error).toBe('Texto não fornecido.');
+        expect(res.body.error).toBe('Texto não fornecido');
     });
 
     it('Deve retornar 400 se não enviar idioma', async () => {
@@ -88,7 +88,7 @@ describe('Teste do endpoint /tts', () => {
             .send({ text: 'Hello World' });
 
         expect(res.status).toBe(400);
-        expect(res.body.error).toBe('Idioma não fornecido.');
+        expect(res.body.error).toBe('Idioma não fornecido');
     });
 
 });

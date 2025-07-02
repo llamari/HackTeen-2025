@@ -41,6 +41,6 @@ describe('Teste do endpoint /tts/describeImage', () => {
             .send({imageBase64: null})
 
         expect(res.status).toBe(400);
-        expect(res.body.error).toBe('A imagem é obrigatória.');
+        expect(res.body.error).toBe('A imagem é obrigatória');
     });
 });
