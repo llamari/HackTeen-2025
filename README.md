@@ -1,4 +1,4 @@
-# 🚀 **IncluSound – HackTeen-2025**
+# 🚀 **IncluSound – ETEC Bento Quirino**
 
 
 
