@@ -169,6 +169,26 @@
         ],
         "summary": "Remove um usuário",
         "description": "Remove um usuário do sistema (requer autenticação).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "email"
+                ],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "usuario@email.com"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
         "responses": {
           "200": {
             "description": "Usuário excluído com sucesso",
