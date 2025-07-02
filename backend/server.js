@@ -37,6 +37,8 @@ app.use(express.json());
   }
 })();
 
+app.get('/', (req, res) => res.send("API do Inclusound rodando!"))
+
 app.use('/users', usersRoutes);
 
 app.use('/tts', ttsRoutes);
