@@ -1,4 +1,4 @@
-# 🚀 **IncluSound – HackTeen-2025**
+# 🚀 **IncluSound – ETEC Bento Quirino**
 
 
 
@@ -110,7 +110,7 @@ Nosso objetivo é **eliminar barreiras** e tornar o conhecimento acessível para
 
 📌 A API segue o padrão REST e está documentada no Swagger.
 
-✅ Acesse a documentação Swagger: 🔗 [Clique Aqui](docs/swagger.json)
+✅ Acesse a documentação Swagger: 🔗 [Clique Aqui](backend/swagger.json)
 
 ---
 
