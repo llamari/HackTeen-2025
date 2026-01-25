@@ -50,13 +50,13 @@ export const SignUp = async (req, res) => {
         const { email, password } = req.body;
         const user = await SignUpService(email, password)
 
-        res.status(201).json({ message: 'Usuário criado', id: user.id, success: true });
+        return res.status(201).json({ message: 'Usuário criado', id: user.id, success: true });
     } catch (error) {
         if (error.type === "userExists") {
-            res.status(409).json({ message: 'Usuário já existe' })
+            return res.status(409).json({ message: 'Usuário já existe' })
         }
         console.error("Erro em Cadastrar (SignUp): ", error);
-        res.status(500).json({ message: 'Erro inesperado' });
+        return res.status(500).json({ message: 'Erro inesperado' });
     }
 }
 

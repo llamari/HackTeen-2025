@@ -2,40 +2,48 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 import bcrypt from 'bcryptjs';
-import User from '../models/usersModels.js'; 
+import User from '../models/usersModels.js';
 import { sendEmailWithPassword } from '../utils/sendEmail.js';
+import { schema } from '../database/schema/index.js';
+import { db } from '../database/connection.js';
+import { eq } from 'drizzle-orm';
 
 export const GetUsersService = async () => {
-    const users = await User.findAll(); 
+    const users = await db.select().from(schema.users);
     return users
 }
 
-export const SignUpService = async (email, password) => { 
+export const SignUpService = async (email, password) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const userExists = await User.findOne({where: {email: email}})
+    const userExists = await db.select().from(schema.users).where(
+        eq(schema.users.email, email)
+    );
 
-    if (userExists) {
-        throw { type: 'userExists'};        
-    } 
-    
-    const user = await User.create({ 
+    if (userExists.length > 0) {
+        throw { type: 'userExists' };
+    }
+
+    const user = await db.insert(schema.users).values({
         email: email,
         password: hashedPassword,
         code: null
-    })
-
-    return user 
+    });
+    return user
 }
 
 export const SignInService = async (email, password) => {
-    const user = await User.findOne({ where: { email } }); 
+    const users = await db.select().from(schema.users).where(
+        eq(schema.users.email, email)
+    );
+
+    const user = users[0];
 
     if (!user) {
         throw { type: 'verification', message: 'Usuário não encontrado' };
     }
 
-    const valid = await bcrypt.compare(password, user.password); 
+    const valid = await bcrypt.compare(password, user.password);
 
     if (!valid) {
         throw { type: 'verification', message: 'Login inválido' };
@@ -54,38 +62,49 @@ export const SignInService = async (email, password) => {
 };
 
 export const DeleteUserService = async (email) => {
-    const user = await User.findOne({ where: { email: email } }) 
+    const users = await db.select().from(schema.users).where(
+        eq(schema.users.email, email)
+    );
+
+    const user = users[0];
+
     if (!user) {
         throw new Error('Usuário não encontrado')
     }
 
-    await User.destroy({ where: { email: email } })
+    await db.delete(schema.users).where(eq(schema.users.email, email))
 }
 
 export const ForgotPasswordService = async (email) => {
-    const user = await User.findOne({ where: { email: email } }) 
+    const users = await db.select().from(schema.users).where(
+        eq(schema.users.email, email)
+    );
+
+    const user = users[0];
 
     if (!user) {
-        throw new Error("Usuário não encontrado"); 
+        throw new Error("Usuário não encontrado");
     }
 
     const code = Math.floor(1000 + Math.random() * 9000);
 
-    await User.update({ code: code }, { where: { email: email } }) 
-
-    console.log("Código gerado:", code);
+    await db.update(schema.users).set({ code: code }).where(eq(schema.users.email, email));
 
     sendEmailWithPassword(
         email,
-        'Clique aqui para mudar sua senha!',
-        `Olá!\nPara alterar sua senha no nosso programa de tradução de textos para sons, insira o código abaixo para confirmar sua identidade: \n${code}`
+        'Redefinição de senha – Inclusound',
+        `Olá, \n \n Recebemos uma solicitação para redefinir a senha da sua conta no Inclusound. \n \n Para confirmar sua identidade e prosseguir com a alteração de senha, utilize o código de verificação abaixo: \n${code}\nSe você não solicitou a redefinição de senha, pode ignorar este e-mail com segurança. Nenhuma alteração será realizada sem a confirmação do código.\n \nEm caso de dúvidas ou problemas, nossa equipe está à disposição para ajudar.\n \nAtenciosamente, \nEquipe Inclusound`
     );
 
     return code
 }
 
 export const VerifyCodeService = async (code, email) => {
-    const user = await User.findOne({ where: { email: email } }); 
+    const users = await db.select().from(schema.users).where(
+        eq(schema.users.email, email)
+    );
+
+    const user = users[0];
 
     if (!user) {
         throw { type: 'user', message: 'Usuário não encontrado' };
@@ -94,17 +113,21 @@ export const VerifyCodeService = async (code, email) => {
         throw { type: 'code', message: 'Código inválido' };
     }
 
-    await User.update({ code: null }, { where: { email: email } }); 
+    await db.update(schema.users).set({ code: null }).where(eq(schema.users.email, email));
 }
 
-export const NewPasswordService = async (email, password) => { 
-    const hashed = await bcrypt.hash(password, 10);            
+export const NewPasswordService = async (email, password) => {
+    const hashed = await bcrypt.hash(password, 10);
 
-    const user = await User.findOne({ where: { email: email } }); 
+    const users = await db.select().from(schema.users).where(
+        eq(schema.users.email, email)
+    );
+
+    const user = users[0];
 
     if (!user) {
         throw new Error("Usuário não encontrado");
     }
 
-    await User.update({ password: hashed }, { where: { email: email } });
+    await db.update(schema.users).set({ password: hashed }).where(eq(schema.users.email, email));
 }

@@ -1,10 +1,11 @@
 import path from 'path';
 import gTTS from 'gtts';
-import Text from '../models/ttsModels.js';
 import { fileURLToPath } from 'url';
 import axios from 'axios';
-import SummarizerManager from 'node-summarizer/src/SummarizerManager.js';
-import { text } from 'stream/consumers';
+import { schema } from '../database/schema/index.js';
+import { db } from '../database/connection.js';
+import { describeImage, generateEmbeddings, summarizeText } from '../utils/gemini.js';
+import { eq, sql } from 'drizzle-orm';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -14,12 +15,17 @@ export const TextToSoundService = async (userId, text, language) => {
     const filepath = path.join(__dirname, filename);
 
     try {
-        await Text.create({
+        const embeddings = await generateEmbeddings(text);
+
+        console.log(embeddings.length);
+
+        await db.insert(schema.texts).values({
             content: text,
-            user_id: userId
+            user_id: userId,
+            embeddings: embeddings
         });
     } catch (error) {
-        throw { type: 'db', message: 'Erro ao salvar texto no banco.' };
+        throw { type: 'db', message: 'Erro ao salvar texto no banco.', error: error };
     }
 
     return new Promise((resolve, reject) => {
@@ -37,28 +43,21 @@ export const TextToSoundService = async (userId, text, language) => {
 
 export const SummariseService = async (userId, text) => {
     try {
-        const requestBody = {
-            contents: [
-                {
-                    parts: [{ text: `Resuma o seguinte texto mantendo o mesmo idioma em que ele foi escrito. Não traduza. Mantenha os principais pontos e informações relevantes. Texto: \n${text}` }
-                        
-                    ],
-                },
-            ],
-        };
+        const result = await summarizeText(text);
 
-        const API_KEY = process.env.API_KEY;
-        const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
-
-        const response = await axios.post(API_URL, requestBody);
-
-        const result = response.data.candidates[0]?.content?.parts[0]?.text || '';
+        if (!result) {
+            throw { type: 'api', message: 'Erro ao resumir o texto.' };
+        }
 
         try {
-            await Text.create({
+            const embedding = await generateEmbeddings(result);
+
+            await db.insert(schema.texts).values({
                 content: result,
-                user_id: userId
+                user_id: userId,
+                embeddings: embedding
             });
+
         } catch (error) {
             throw { type: 'db', message: 'Erro ao salvar texto no banco.' };
         }
@@ -72,40 +71,24 @@ export const SummariseService = async (userId, text) => {
 
 export const DescribeImageService = async (userId, imageBase64) => {
     try {
-        const requestBody = {
-            contents: [
-                {
-                    parts: [
-                        {
-                            inlineData: {
-                                mimeType: "image/jpeg", // ou "image/png"
-                                data: imageBase64
-                            }
-                        },
-                        {
-                            text: "Descreva detalhadamente o conteúdo visual desta imagem. Se houver textos, os repitá-os em sua resposta."
-                        }
-                    ]
-                }
-            ]
-        };
+        const result = await describeImage(imageBase64);
 
-        const API_KEY = process.env.API_KEY;
-        const API_URL = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+        if (!result) {
+            throw { type: 'api', message: 'Erro ao descrever a imagem.' };
+        }
 
-        const response = await axios.post(API_URL, requestBody);
-
-        const result = response.data.candidates[0]?.content?.parts[0]?.text || 'Não foi possível gerar uma descrição.';
-        
         try {
-            await Text.create({
+            const embedding = await generateEmbeddings(result);
+
+            await db.insert(schema.texts).values({
                 content: result,
-                user_id: userId
+                user_id: userId,
+                embeddings: embedding
             });
         } catch (error) {
             throw { type: 'db', message: 'Erro ao salvar texto no banco.' };
         }
-        
+
         return result;
 
     } catch (error) {
@@ -115,7 +98,9 @@ export const DescribeImageService = async (userId, imageBase64) => {
 };
 
 export const YourTextsService = async (userId) => {
-    const texts = await Text.findAll({ where: { user_id: userId } })
+    const texts = await db.select().from(schema.texts).where(
+        eq(schema.texts.user_id, userId)
+    );
     return texts
 }
 
