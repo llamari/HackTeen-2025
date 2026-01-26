@@ -1,10 +1,10 @@
 import { doublePrecision, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { users } from './users.js';
+import { rooms } from "./rooms.js";
 
-export const texts = pgTable('texts', {
+export const roomTexts = pgTable('roomTexts', {
     id: uuid().primaryKey().defaultRandom(),
-    content: text().notNull(),
-    user_id: uuid().references(() => users.id).notNull(),
+    roomId: uuid().references(() => rooms.id).notNull(),
+    transcript: text().notNull(),
     embeddings: doublePrecision('embeddings').array().notNull(),
     createdAt: timestamp().defaultNow().notNull()
 })

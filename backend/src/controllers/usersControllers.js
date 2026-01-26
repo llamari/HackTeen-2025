@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { DeleteUserService, ForgotPasswordService, GetUsersService, NewPasswordService, SignInService, SignUpService, VerifyCodeService } from '../services/usersServices.js';
 
-
 export const GetUsers = async (req, res) => {
     try {
         const users = await GetUsersService();
