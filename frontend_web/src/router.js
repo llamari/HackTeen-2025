@@ -6,6 +6,7 @@ import Home from './Pages/Home';
 import UserRegistration from './Pages/SignUp';
 import { History } from './Pages/History';
 import { Objectives } from './Pages/Objectives';
+import { AllRooms } from './Pages/AllRooms';
 
 function Route1() { 
     return(
@@ -17,6 +18,7 @@ function Route1() {
                 <Route path='/home' element={<Home/>}/>
                 <Route path='/history' element={<History/>}/>
                 <Route path='/objectives' element={<Objectives/>}/>
+                <Route path='/rooms' element={<AllRooms/>}/>
             </Routes>
         </BrowserRouter>
     )
