@@ -62,7 +62,7 @@ export function Room() {
     }, []);
 
     const fetchRoom = useCallback(async () => {
-        const response = await axios.get(`http://localhost:5000/rooms/${id}`,
+        const response = await axios.get(`https://inclusound-back.onrender.com/rooms/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -237,7 +237,7 @@ export function Room() {
             formData.append('file', audio, 'audio.webm')
 
             const response = await axios.post(
-                `http://localhost:5000/rooms/${id}/audio`,
+                `https://inclusound-back.onrender.com/rooms/${id}/audio`,
                 formData,
                 {
                     headers: {
