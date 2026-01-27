@@ -1,15 +1,8 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import './index.css';
 
 function Sidebar({ largura, sidebarRef }) {
     const navigate = useNavigate()
-
-    function LogOut() {
-        localStorage.removeItem('token');
-        window.location.href = '/';
-    }
 
     return (
         <aside
@@ -45,6 +38,10 @@ function Sidebar({ largura, sidebarRef }) {
 
             <button className="sidebar-item" aria-label="Ir para a página de Proposta e Objetivos" onClick={() => navigate('/objectives')} >
                 Proposta e objetivos
+            </button>
+
+            <button className="sidebar-item" aria-label="Ir para a página de Salas de Estudo" onClick={() => navigate('/rooms')} >
+                Salas de Estudo
             </button>
         </aside>
     )

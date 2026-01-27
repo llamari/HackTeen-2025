@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import './index.css';
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { MdOutlineEmail } from "react-icons/md";
 import { CiLock } from "react-icons/ci";
 
@@ -9,7 +9,7 @@ function UserRegistration() {
     const navigate = useNavigate();
     async function SignUp(event) {
         event.preventDefault();
-        if ((document.getElementById("password").value) == (document.getElementById("password2").value)) {
+        if ((document.getElementById("password").value) === (document.getElementById("password2").value)) {
             const mail = document.getElementById("e-mail").value;
             const password = document.getElementById("password").value;
             try {
@@ -20,7 +20,7 @@ function UserRegistration() {
 
                 console.log(response.data);
 
-                if (response.data.success == true) {
+                if (response.data.success === true) {
                     localStorage.setItem('token', response.data.token);
                     window.location.href = '/';
                 } else {

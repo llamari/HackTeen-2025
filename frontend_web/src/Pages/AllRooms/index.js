@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react"
-import { Moon, Sun, Search, MessageCircleQuestion, Clock, Plus } from "lucide-react"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { Search, MessageCircleQuestion, Clock } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from "dayjs"
@@ -32,7 +32,7 @@ export function AllRooms() {
         setlargura(0);
     }
 
-    async function fetchRooms() {
+    const fetchRooms = useCallback(async () => {
         const response = await axios.get('https://inclusound-back.onrender.com/rooms',
             {
                 headers: {
@@ -43,11 +43,11 @@ export function AllRooms() {
         )
         const data = await response.data
         setRooms(data)
-    }
+    }, [token]);
 
     useEffect(() => {
         fetchRooms()
-    }, [])
+    }, [fetchRooms])
 
     useEffect(() => {
         const filteredRoomsVar = rooms?.filter(
@@ -89,7 +89,7 @@ export function AllRooms() {
 
         console.log(response.data)
 
-        if (response.status != 201) {
+        if (response.status !== 201) {
             return alert("Erro ao criar sala")
         }
 
@@ -100,7 +100,7 @@ export function AllRooms() {
 
     function LogOut() {
         // eslint-disable-next-line no-restricted-globals
-        if (confirm('Você tem certeza de que deseja deslogar da plataforma?') == true) {
+        if (confirm('Você tem certeza de que deseja deslogar da plataforma?') === true) {
             localStorage.removeItem('token')
             navigate('/')
         }

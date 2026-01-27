@@ -72,11 +72,11 @@ export function History() {
 
             getTexts()
         }
-    }, [])
+    }, [token, navigate]);
 
     function LogOut() {
         // eslint-disable-next-line no-restricted-globals
-        if (confirm('Você tem certeza de que deseja deslogar da plataforma?') == true) {
+        if (confirm('Você tem certeza de que deseja deslogar da plataforma?') === true) {
             localStorage.removeItem('token')
             navigate('/')
         }

@@ -65,12 +65,12 @@ export function Room() {
             }
         )
 
-        if (response.status != 200) {
+        if (response.status !== 200) {
             throw new Error("Erro ao buscar salas")
         }
 
         const data = await response.data
-        const rightRoom = data?.find((room) => room.id == id)
+        const rightRoom = data?.find((room) => room.id === id)
         setRoom(rightRoom)
     }
 
@@ -84,7 +84,7 @@ export function Room() {
             }
         )
 
-        if (response.status != 200) {
+        if (response.status !== 200) {
             throw new Error("Erro ao buscar perguntas")
         }
 
@@ -111,7 +111,7 @@ export function Room() {
             }
         )
 
-        if (response.status != 201) {
+        if (response.status !== 201) {
             throw new Error("Erro ao criar questão")
         }
 
@@ -232,7 +232,7 @@ export function Room() {
 
     function LogOut() {
         // eslint-disable-next-line no-restricted-globals
-        if (confirm('Você tem certeza de que deseja deslogar da plataforma?') == true) {
+        if (confirm('Você tem certeza de que deseja deslogar da plataforma?') === true) {
             localStorage.removeItem('token')
             navigate('/')
         }
