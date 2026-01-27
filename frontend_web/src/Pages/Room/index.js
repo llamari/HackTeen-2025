@@ -200,14 +200,31 @@ export function Room() {
             },
         })
 
+        streamRef.current = audio
+
         await createRecorder(audio)
 
-        recorder.current?.start()
+        recorder.current.ondataavailable = async event => {
+            if (event.data.size > 0) {
+                await uploadAudio(event.data)
+            }
+        }
 
+        recorder.current.start()
+
+        // Configurar timer para enviar chunks a cada 5 segundos
         intervalRef.current = setInterval(async () => {
-            recorder.current?.stop()
-            await createRecorder(audio)
-            recorder.current?.start()
+            if (recorder.current && recorder.current.state === 'recording') {
+                recorder.current.stop()
+                // O ondataavailable será chamado automaticamente
+
+                // Reiniciar gravação após um pequeno delay
+                setTimeout(() => {
+                    if (isRecording && recorder.current && recorder.current.state === 'inactive') {
+                        recorder.current.start()
+                    }
+                }, 100)
+            }
         }, 5000)
     }
 
