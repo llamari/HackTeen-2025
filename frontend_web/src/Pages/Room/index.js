@@ -61,45 +61,6 @@ export function Room() {
         };
     }, []);
 
-    const fetchRoom = useCallback(async () => {
-        const response = await axios.get(`https://inclusound-back.onrender.com/rooms/${id}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-            }
-        )
-
-        if (response.status !== 200) {
-            throw new Error("Erro ao buscar salas")
-        }
-
-        const data = await response.data
-        console.log(data)
-        const rightRoom = data?.id === id ? data : null
-        setRoom(rightRoom)
-        getAudio(rightRoom)
-    }, [id, token])
-
-    const fetchQuestions = useCallback(async () => {
-        const response = await axios.get(`https://inclusound-back.onrender.com/rooms/questions/${id}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-            }
-        )
-
-        if (response.status !== 200) {
-            throw new Error("Erro ao buscar perguntas")
-        }
-
-        const data = await response.data
-        setQuestions(data)
-    }, [id, token])
-
     const getAudio = useCallback(async (roomData) => {
         console.log("Buscando áudio para a sala...")
         try {
@@ -133,6 +94,45 @@ export function Room() {
             console.error('Erro ao buscar áudio:', error.response?.data || error);
         }
     }, [token]);
+
+    const fetchRoom = useCallback(async () => {
+        const response = await axios.get(`https://inclusound-back.onrender.com/rooms/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            }
+        )
+
+        if (response.status !== 200) {
+            throw new Error("Erro ao buscar salas")
+        }
+
+        const data = await response.data
+        console.log(data)
+        const rightRoom = data?.id === id ? data : null
+        setRoom(rightRoom)
+        getAudio(rightRoom)
+    }, [id, token, getAudio])
+
+    const fetchQuestions = useCallback(async () => {
+        const response = await axios.get(`https://inclusound-back.onrender.com/rooms/questions/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+            }
+        )
+
+        if (response.status !== 200) {
+            throw new Error("Erro ao buscar perguntas")
+        }
+
+        const data = await response.data
+        setQuestions(data)
+    }, [id, token])
 
     useEffect(() => {
         fetchRoom()
