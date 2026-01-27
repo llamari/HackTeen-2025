@@ -2,7 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 const gemini = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
-const model = 'gemini-3-flash-preview'
+const model = 'gemini-2.5-flash'
 
 export async function transcribeAudio(audio, mimeType) {
     const response = await gemini.models.generateContent({

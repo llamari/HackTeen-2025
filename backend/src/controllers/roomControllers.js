@@ -1,5 +1,5 @@
 
-import { CreateQuestionService, CreateRoomService, GetRoomQuestionsService, GetRoomsService, UploadAudioForRoomService, UploadTextForRoomService } from '../services/roomServices.js';
+import { CreateQuestionService, CreateRoomService, GetRoomQuestionsService, GetRoomService, GetRoomsService, UploadAudioForRoomService, UploadTextForRoomService } from '../services/roomServices.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -28,8 +28,20 @@ export const CreateRoom = async (req, res) => {
 
 export const GetRooms = async (req, res) => {
     try {
-        const rooms = await GetRoomsService();
+        const rooms = await GetRoomsService(req.user.id);
         res.status(200).json(rooms);
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error: 'Erro inesperado'
+        });
+    }
+}
+
+export const GetRoom = async (req, res) => {
+    try {
+        const room = await GetRoomService(req.user.id, req.params.roomId);
+        res.status(200).json(room);
     } catch (error) {
         console.log(error)
         return res.status(500).json({
@@ -68,16 +80,21 @@ export const GetRoomQuestions = async (req, res) => {
 
 export const UploadAudioForRoom = async (req, res) => {
     const { roomId } = req.params;
-    const audio = await req.file()
+    const audio = req.file;
 
     if (!audio) {
-        throw new Error('O áudio não foi enviado')
+        return res.status(400).json({ error: 'O áudio não foi enviado' });
     }
 
     try {
-        await UploadAudioForRoomService(roomId, audio);
-        res.status(200).json({ message: 'Áudio enviado com sucesso' });
+        const result = await UploadAudioForRoomService(roomId, audio);
+        res.status(200).json({ 
+            message: 'Áudio enviado com sucesso',
+            transcription: result.transcription,
+            embeddings: result.embeddings
+        });
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             error: 'Erro inesperado'
         });

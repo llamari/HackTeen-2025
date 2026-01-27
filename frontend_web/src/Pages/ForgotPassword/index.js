@@ -17,8 +17,7 @@ function Password() {
     async function Send(e) {
         e.preventDefault();
         try {
-            const apiUrl = process.env.API_URL || 'http://localhost:5000';
-            const response = await axios.put(`${apiUrl}/users/forgot/password`, { email });
+            const response = await axios.put(`https://inclusound-back.onrender.com/users/forgot/password`, { email });
             console.log("Código enviado:", response.data);
             setStep(2);
         } catch (error) {

@@ -8,9 +8,11 @@ import dayjs from "dayjs"
 import 'dayjs/locale/pt-br'
 import axios from "axios"
 import Sidebar from "../../Components/Sidebar"
-import { FaBars } from "react-icons/fa6"
+import { FaBars, FaPlay } from "react-icons/fa6"
 import { LuLogOut } from "react-icons/lu"
 import './index.css'
+import { BsPauseFill } from "react-icons/bs"
+import WaveSurferPlayer from "@wavesurfer/react";
 
 const isRecordingSupported =
     !!navigator.mediaDevices &&
@@ -25,8 +27,12 @@ export function Room() {
     const [newText, setNewText] = useState("")
     const [newQuestion, setNewQuestion] = useState("")
     const [questions, setQuestions] = useState()
+    const [audioUrl, setAudioUrl] = useState(null)
+    const [isPlaying, setIsPlaying] = useState(false)
+    const waveformRefTTS = useRef(null)
     const recorder = useRef(null)
     const intervalRef = useRef(null)
+    const streamRef = useRef(null)
     const { id } = useParams();
     dayjs.extend(relativeTime);
     dayjs.locale('pt-br')
@@ -55,8 +61,8 @@ export function Room() {
         };
     }, []);
 
-    const fetchRooms = useCallback(async () => {
-        const response = await axios.get('https://inclusound-back.onrender.com/rooms',
+    const fetchRoom = useCallback(async () => {
+        const response = await axios.get(`http://localhost:5000/rooms/${id}`,
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -70,8 +76,10 @@ export function Room() {
         }
 
         const data = await response.data
-        const rightRoom = data?.find((room) => room.id === id)
+        console.log(data)
+        const rightRoom = data?.id === id ? data : null
         setRoom(rightRoom)
+        getAudio(rightRoom)
     }, [id, token])
 
     const fetchQuestions = useCallback(async () => {
@@ -92,10 +100,44 @@ export function Room() {
         setQuestions(data)
     }, [id, token])
 
+    const getAudio = useCallback(async (roomData) => {
+        console.log("Buscando áudio para a sala...")
+        try {
+            const texto = roomData.roomTexts
+                ?.map(rt => rt.transcript)
+                ?.join(' ')
+                ?.trim();
+
+            if (!texto || texto.length === 0) {
+                console.log("Nenhum texto encontrado para converter em áudio");
+                return;
+            }
+
+            const response = await axios.post(
+                'https://inclusound-back.onrender.com/tts',
+                { text: texto, language: 'pt-br' },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    responseType: 'arraybuffer'
+                }
+            );
+
+            console.log("Áudio buscado com sucesso!");
+            const audioBlob = new Blob([response.data], { type: 'audio/mp3' });
+            const url = URL.createObjectURL(audioBlob);
+            setAudioUrl(url);
+        } catch (error) {
+            console.error('Erro ao buscar áudio:', error.response?.data || error);
+        }
+    }, [token]);
+
     useEffect(() => {
-        fetchRooms()
+        fetchRoom()
         fetchQuestions()
-    }, [id, fetchRooms, fetchQuestions])
+    }, [id, fetchRoom, fetchQuestions]);
 
 
     async function AddQuestion(e) {
@@ -115,6 +157,8 @@ export function Room() {
             throw new Error("Erro ao criar questão")
         }
 
+        setNewQuestion("")
+        alert("Pergunta enviada com sucesso!")
         fetchQuestions()
     }
 
@@ -156,9 +200,9 @@ export function Room() {
             },
         })
 
-        await createRecorder(audio)
+        streamRef.current = audio
 
-        recorder.current?.start()
+        await createRecorder(audio)
 
         recorder.current.ondataavailable = async event => {
             if (event.data.size > 0) {
@@ -177,6 +221,11 @@ export function Room() {
             recorder.current.stop()
         }
 
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(track => track.stop())
+            streamRef.current = null
+        }
+
         if (intervalRef.current) {
             clearInterval(intervalRef.current)
         }
@@ -188,12 +237,11 @@ export function Room() {
             formData.append('file', audio, 'audio.webm')
 
             const response = await axios.post(
-                `https://inclusound-back.onrender.com/rooms/${id}/audio`,
+                `http://localhost:5000/rooms/${id}/audio`,
                 formData,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        // NÃO definir Content-Type manualmente
                     }
                 }
             )
@@ -224,6 +272,8 @@ export function Room() {
             )
 
             console.log('Resposta do servidor:', response.data)
+            setNewText("")
+            alert("Texto enviado com sucesso!")
             fetchQuestions()
         } catch (error) {
             console.error('Erro ao enviar texto:', error.response?.data || error)
@@ -256,49 +306,96 @@ export function Room() {
             </div>
 
             {/* Main Content */}
-            <main>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <main id="room-main-content">
+                <div>
                     {/* Recording and Question Section */}
-                    <div className="lg:col-span-1 space-y-6">
+                    <div>
                         {/* Audio Recording */}
-                        <div id="new-content-container">
-                            <div id="new-content-header">
-                                <h2>Adicionar conteúdo</h2>
-                                <h4>
-                                    Grave sua voz ou escreva textos para fazer perguntas sobre o conteúdo
-                                </h4>
-                            </div>
-                            <div id="new-content">
-                                <button
-                                    onClick={isRecording ? stopRecording : startRecording}
-                                    id="recorder"
-                                    className={isRecording && "recording"}
-                                >
-                                    {isRecording ? (
-                                        <>
-                                            <MicOff className="h-4 w-4 mr-2" />
-                                            Parar gravação
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Mic className="h-4 w-4 mr-2" />
-                                            Iniciar gravação
-                                        </>
-                                    )}
-                                </button>
-
-                                <div id="new-text">
-                                    <textarea
-                                        value={newText}
-                                        onChange={(e) => setNewText(e.target.value)}
-                                    />
-                                    <button onClick={sendText}>Enviar Texto</button>
+                        {room.ownedByUser && (
+                            <div id="new-content-container" className="room-subcontainer">
+                                <div id="new-content-header">
+                                    <h2>Adicionar conteúdo</h2>
+                                    <h4>
+                                        Grave sua voz ou escreva textos para fazer perguntas sobre o conteúdo
+                                    </h4>
                                 </div>
+                                <div id="new-content">
+                                    <button
+                                        onClick={isRecording ? stopRecording : startRecording}
+                                        id="recorder"
+                                        className={isRecording && "recording"}
+                                    >
+                                        {isRecording ? (
+                                            <>
+                                                <MicOff className="h-4 w-4 mr-2" />
+                                                Parar gravação
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Mic className="h-4 w-4 mr-2" />
+                                                Iniciar gravação
+                                            </>
+                                        )}
+                                    </button>
+
+                                    <div id="new-text">
+                                        <textarea
+                                            value={newText}
+                                            onChange={(e) => setNewText(e.target.value)}
+                                        />
+                                        <button onClick={sendText}>Enviar Texto</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="room-subcontainer">
+                            <h2>Conteúdo da sala</h2>
+
+                            {audioUrl && (
+                                <div style={{ width: "100%", maxHeight: "40px", display: "flex", marginBottom: "10px" }} id="audio-player">
+                                    <div>
+                                        <button
+                                            id="play-button"
+                                            aria-label={isPlaying ? "Pausar áudio" : "Reproduzir áudio"}
+                                            onClick={() => {
+                                                if (waveformRefTTS.current) {
+                                                    waveformRefTTS.current.playPause();
+                                                    setIsPlaying(waveformRefTTS.current.isPlaying());
+                                                }
+                                            }}>
+                                            {isPlaying ? <BsPauseFill /> : <FaPlay />}
+                                        </button>
+                                    </div>
+                                    <WaveSurferPlayer
+                                        height={40}
+                                        width={200}
+                                        waveColor="#fff"
+                                        progressColor="#8bc5c7"
+                                        url={audioUrl}
+                                        normalize={true}
+                                        responsive={true}
+                                        onReady={(ws) => {
+                                            waveformRefTTS.current = ws;
+                                        }}
+                                        onFinish={() => setIsPlaying(false)}
+                                    />
+                                </div>
+                            )}
+
+                            <div>
+                                <h4>
+                                    {room.roomTexts && room.roomTexts.map((content) => (
+                                        <>
+                                            {content.transcript} &nbsp;
+                                        </>
+                                    ))}
+                                </h4>
                             </div>
                         </div>
 
                         {/* Question Form */}
-                        <div id="question-form-container">
+                        <div className="room-subcontainer">
                             <div>
                                 <h2>Faça uma pergunta</h2>
                                 <h4>
@@ -326,7 +423,7 @@ export function Room() {
                 </div>
 
                 {/* Questions and Answers List */}
-                <div id="questions-container">
+                <div className="room-subcontainer">
                     <div>
                         <h2 className={`text-xl text-gray-900"}`}>
                             Perguntas e Respostas
@@ -342,7 +439,7 @@ export function Room() {
                                 className="question-card"
                             >
                                 <div className="question-info">
-                                    <div className="flex items-center gap-2">
+                                    <div className="question-info-item">
                                         <MessageCircleQuestion
                                             className={`h-4 w-4 text-purple-500"}`}
                                         />
@@ -350,24 +447,15 @@ export function Room() {
                                             Pergunta
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <div
-                                            variant={qa.answer ? "default" : "secondary"}
-                                            className={`${qa.answer
-                                                ? "bg-green-600 text-white"
-                                                : "bg-purple-100 text-purple-700"
-                                                }`}
-                                        >
-                                            {qa.answer ? (
-                                                <CheckCircle className="h-3 w-3 mr-1" />
-                                            ) : (
-                                                <Clock className="h-3 w-3 mr-1" />
-                                            )}
-                                            {qa.answer ? "Respondida" : "Pendente"}
-                                        </div>
-
+                                    <div className="question-info-item">
+                                        {qa.answer ? (
+                                            <CheckCircle className="h-3 w-3 mr-1" />
+                                        ) : (
+                                            <Clock className="h-3 w-3 mr-1" />
+                                        )}
+                                        {qa.answer ? "Respondida" : "Pendente"}
                                     </div>
-                                    <div>
+                                    <div className="question-info-item">
                                         <span className={`text-xs text-purple-500"}`}>
                                             {dayjs().from(dayjs(qa.createdAt), true)}
                                         </span>
@@ -377,18 +465,12 @@ export function Room() {
                                 <h3 className="question-text">{qa.question}</h3>
 
                                 {qa.answer ? (
-                                    <div
-                                        className={`p-3 rounded border-l-4 bg-white border-l-purple-500 text-gray-700"
-                                                        }`}
-                                    >
+                                    <div>
                                         <p className="answer-text">{qa.answer}</p>
                                     </div>
                                 ) : (
-                                    <div
-                                        className={`p-3 rounded border-l-4 "bg-white border-l-purple-500 text-gray-700"
-                                                        }`}
-                                    >
-                                        <p>Esperando resposta da IA</p>
+                                    <div>
+                                        <p className="answer-text">Esperando resposta da IA</p>
                                     </div>
                                 )}
                             </div>
