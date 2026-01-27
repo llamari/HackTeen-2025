@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import { Moon, Sun, Mic, MicOff, Send, ArrowLeft, MessageCircleQuestion, Clock, CheckCircle } from "lucide-react"
-import { Link, useNavigate, useParams } from "react-router-dom"
+import { useState, useRef, useEffect, useCallback } from "react"
+import { Mic, MicOff, Send, MessageCircleQuestion, Clock, CheckCircle } from "lucide-react"
+import { useNavigate, useParams } from "react-router-dom"
 import relativeTime from 'dayjs/plugin/relativeTime'
 import dayjs from "dayjs"
 import 'dayjs/locale/pt-br'
@@ -55,7 +55,7 @@ export function Room() {
         };
     }, []);
 
-    async function fetchRooms() {
+    const fetchRooms = useCallback(async () => {
         const response = await axios.get('https://inclusound-back.onrender.com/rooms',
             {
                 headers: {
@@ -72,9 +72,9 @@ export function Room() {
         const data = await response.data
         const rightRoom = data?.find((room) => room.id === id)
         setRoom(rightRoom)
-    }
+    }, [id, token])
 
-    async function fetchQuestions() {
+    const fetchQuestions = useCallback(async () => {
         const response = await axios.get(`https://inclusound-back.onrender.com/rooms/questions/${id}`,
             {
                 headers: {
@@ -90,12 +90,12 @@ export function Room() {
 
         const data = await response.data
         setQuestions(data)
-    }
+    }, [id, token])
 
     useEffect(() => {
         fetchRooms()
         fetchQuestions()
-    }, [id])
+    }, [id, fetchRooms, fetchQuestions])
 
 
     async function AddQuestion(e) {

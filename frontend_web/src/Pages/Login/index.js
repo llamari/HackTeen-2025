@@ -43,7 +43,7 @@ function Login() {
                 <div id="login">
                     <h1 id="title-login">Entrar</h1>
                     <h2 id="caption-login">IncluSound, seu sistema de inclusão</h2>
-                    <form id="login-form" role="form">
+                    <form id="login-form">
                         <div className="inputLogin">
                             <MdOutlineEmail color="#282828" aria-hidden="true"/>
                             <input type="email" id="e-mail" placeholder="E-mail" aria-label="E-mail" />
