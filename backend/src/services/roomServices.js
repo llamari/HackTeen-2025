@@ -3,10 +3,11 @@ import { schema } from "../database/schema/index.js"
 import { generateAnswer, generateEmbeddings, transcribeAudio } from "../utils/gemini.js"
 import { and, count, eq, sql } from "drizzle-orm"
 
-export const CreateRoomService = async (name, description) => {
+export const CreateRoomService = async (name, description, userId) => {
     const newRoom = await db.insert(schema.rooms).values({
         name: name,
         description: description,
+        createdBy: userId
     }).returning();
 
     return newRoom[0];

@@ -5,13 +5,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const CreateRoom = async (req, res) => {
+    const userId = req.user.id;
     const { name, description } = req.body
 
     if (!name) {
         return res.status(400).json({ error: 'Nome da sala é obrigatório' });
     }
     try {
-        const newRoom = await CreateRoomService(name, description);
+        const newRoom = await CreateRoomService(name, description, userId);
 
         if (!newRoom) {
             return res.status(500).json({ error: 'Falha ao criar nova sala' });
