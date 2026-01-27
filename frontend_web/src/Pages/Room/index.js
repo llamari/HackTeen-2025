@@ -200,18 +200,15 @@ export function Room() {
             },
         })
 
-        streamRef.current = audio
-
         await createRecorder(audio)
 
-        recorder.current.ondataavailable = async event => {
-            if (event.data.size > 0) {
-                await uploadAudio(event.data)
-            }
-        }
+        recorder.current?.start()
 
-        recorder.current.start(5000) // timeslice nativo
-
+        intervalRef.current = setInterval(async () => {
+            recorder.current?.stop()
+            await createRecorder(audio)
+            recorder.current?.start()
+        }, 5000)
     }
 
     const stopRecording = async () => {
@@ -258,20 +255,26 @@ export function Room() {
 
     async function sendText() {
         try {
-            const response = await axios.post(
-                `https://inclusound-back.onrender.com/rooms/${id}/text`,
-                {
-                    text: newText
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
-            )
+            const textSentences = newText
+                .split('.')
+                .map(sentence => sentence.trim())
+                .filter(sentence => sentence.length > 0)
 
-            console.log('Resposta do servidor:', response.data)
+            textSentences.forEach(async (sentence) => {
+                await axios.post(
+                    `https://inclusound-back.onrender.com/rooms/${id}/text`,
+                    {
+                        text: sentence
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                )
+            })
+
             setNewText("")
             alert("Texto enviado com sucesso!")
             fetchQuestions()
