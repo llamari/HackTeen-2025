@@ -16,9 +16,9 @@ function UserRegistration() {
         if (password === confirmPassword) {
             try {
                 console.log("As senhas são iguais")
-                const response = await axios.post('http://localhost:5000/signup', {
+                const response = await axios.post('https://inclusound-back.onrender.com/users/signup', {
                     email: email,
-                    password: password 
+                    password: password
                 });
 
                 console.log(response.data);
@@ -42,7 +42,7 @@ function UserRegistration() {
     const formWidth = width < 480 ? '80%' : '30%';
 
     return (
-        <View style={styles.section}> 
+        <View style={styles.section}>
             <Text style={styles.title}>CADASTRO</Text>
             <View style={[styles.registrationForm, { width: formWidth }]}>
                 <Text style={styles.label}>E-mail:</Text>
@@ -90,41 +90,50 @@ function UserRegistration() {
 }
 
 const styles = StyleSheet.create({
-    section: { // corrigir
+    section: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#FFF',
+        backgroundColor: '#06e6f217',
         fontFamily: 'Arial',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
+        position: 'relative',
     },
     registrationForm: { // corrigir
         backgroundColor: '#A2D4DD',
-        padding: '5%',
+        paddingHorizontal: '5%',
+        paddingVertical: '5%',
         borderRadius: 8,
         color: '#000',
+        minHeight: 350,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
     },
     title: {
-        textAlign: 'center',
-        fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#000',
+        textAlign: 'center',
+        fontSize: 28,
+        color: '#08696B',
+        position: 'absolute',
+        top: 70,
     },
     label: {
         fontWeight: 'bold',
         marginBottom: 5,
-        color: '#000',
+        fontSize: 16,
+        color: '#063c3dff',
     },
     inputLogin: {
-        height: 40,
-        backgroundColor: '#fff',
-        borderWidth: 0,
+        backgroundColor: '#d9d9d9',
+        height: 35,
         borderRadius: 5,
-        width: '100%',
-        marginBottom: '5%',
-        paddingHorizontal: 10,
+        display: 'flex',
+        alignItems: 'center',
+        padding: 5,
+        marginBottom: 15,
     },
     link: {
         color: '#000',
@@ -139,18 +148,20 @@ const styles = StyleSheet.create({
         display: 'flex',
     },
     go: {
-        backgroundColor: '#5CBBCC',
+        backgroundColor: '#137F83',
         width: '100%',
-        height: 50, 
-        borderWidth: 0,
-        borderRadius: 8, // .5rem
-        justifyContent: 'center',
+        height: 40,
+        border: 'none',
+        borderRadius: 24,
+        color: '#fff',
+        display: 'flex',
         alignItems: 'center',
-        marginTop: '2%',
+        justifyContent: 'center',
+        marginTop: 20,
     },
     goText: {
         fontWeight: '600',
-        color: '#000',
+        color: '#fff',
         fontSize: 18, // large
     },
 });

@@ -12,11 +12,12 @@ function Login() {
     const { width } = useWindowDimensions();
 
     async function SignIn() {
-        console.log("Está logando"); 
+        console.log("Está logando");
+
         try {
-            const response = await axios.put('http://localhost:5000/signin', {
+            const response = await axios.put('https://inclusound-back.onrender.com/users/signin', {
                 email: email,
-                password: password 
+                password: password
             });
 
             console.log(response.data);
@@ -79,21 +80,24 @@ function Login() {
 }
 
 const styles = StyleSheet.create({
-    section: { 
+    section: {
         width: '100%',
         height: '100%',
-        backgroundColor: '#FFF',
+        backgroundColor: '#06e6f217',
         fontFamily: 'Arial',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,
+        position: 'relative',
     },
     title: {
-        textAlign: 'center',
-        fontSize: 24,
         fontWeight: 'bold',
         marginBottom: 20,
-        color: '#000',
+        textAlign: 'center',
+        fontSize: 28,
+        color: '#08696B',
+        position: 'absolute',
+        top: 70,
     },
     login: {
         backgroundColor: '#A2D4DD',
@@ -101,23 +105,27 @@ const styles = StyleSheet.create({
         paddingVertical: '5%',
         borderRadius: 8,
         color: '#000',
-        minHeight: 200,
+        minHeight: 350,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-evenly',
     },
     label: {
         marginBottom: 5,
-        color: '#000',
+        fontSize: 16,
+        color: '#063c3dff',
     },
     bold: {
         fontWeight: 'bold',
     },
     inputLogin: {
-        height: 40, // 2rem
-        backgroundColor: '#fff',
-        borderWidth: 0,
+        backgroundColor: '#d9d9d9',
+        height: 35,
         borderRadius: 5,
-        width: '100%',
-        marginBottom: '5%',
-        paddingHorizontal: 10,
+        display: 'flex',
+        alignItems: 'center',
+        padding: 5,
+        marginBottom: 15,
     },
     linksContainer: {
         flexDirection: 'row',
@@ -133,18 +141,20 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     go: {
-        backgroundColor: '#5CBBCC',
+        backgroundColor: '#137F83',
         width: '100%',
-        height: 50, // 3rem
-        borderWidth: 0,
-        borderRadius: 8, // .5rem
-        justifyContent: 'center',
+        height: 40,
+        border: 'none',
+        borderRadius: 24,
+        color: '#fff',
+        display: 'flex',
         alignItems: 'center',
-        marginTop: '2%',
+        justifyContent: 'center',
+        marginTop: 20,
     },
     goText: {
         fontWeight: '600',
-        color: '#000',
+        color: '#fff',
         fontSize: 18, // large
     },
 });

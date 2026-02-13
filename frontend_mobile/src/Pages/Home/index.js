@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Picker, ScrollView, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from "react-native";
+import { Picker } from '@react-native-picker/picker';
 import { Audio } from 'expo-av';
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -45,15 +46,15 @@ function Home() {
         setError(null);
 
         try {
-            const response = await axios.post(
-                'http://localhost:5000/texttosound',
+             const response = await axios.post(
+                'https://inclusound-back.onrender.com/tts',
                 { text: texto, language },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    responseType: 'blob'
+                    responseType: 'arraybuffer'
                 }
             );
 
@@ -76,7 +77,7 @@ function Home() {
         
         try {
             const response = await axios.post(
-                'http://localhost:5000/summarize',
+                'https://inclusound-back.onrender.com/tts/summarize',
                 { text: text },
                 {
                     headers: {
@@ -89,7 +90,7 @@ function Home() {
             const summary = response.data.summary;
             TextToSpeach(summary);
         } catch (err) {
-            console.error("Erro:", err); r
+            console.error("Erro:", err);
             setError(err.response?.data?.error || 'Erro ao gerar resumo');
         } finally {
             setIsLoading(false);
